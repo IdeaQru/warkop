@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 Warkop Babol - Sistem Manajemen</title>
+    <meta name="description" content="Sistem manajemen warung kopi Babol dengan tema pink putih yang cantik">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-coffee"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>WARKOP BABOL</h1>
+                        <p>Sistem Manajemen Warung Kopi</p>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="datetime-display" id="datetimeDisplay"></div>
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="main-navigation">
+            <div class="nav-container">
+                <button class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-tab="menu">
+                    <i class="fas fa-list-ul"></i>
+                    <span>Kelola Menu</span>
+                </button>
+                <button class="nav-item" data-tab="kasir">
+                    <i class="fas fa-cash-register"></i>
+                    <span>Kasir</span>
+                </button>
+                <button class="nav-item" data-tab="laporan">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Laporan</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <section id="dashboard" class="tab-panel active">
+                <div class="page-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                    <p>Ringkasan aktivitas Warkop Babol hari ini</p>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-card revenue">
+                        <div class="stat-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Pendapatan Hari Ini</h3>
+                            <p class="stat-value" id="pendapatanHariIni">Rp 0</p>
+                            <small class="stat-label">Total penjualan</small>
+                        </div>
+                    </div>
+
+                    <div class="stat-card transactions">
+                        <div class="stat-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Transaksi Hari Ini</h3>
+                            <p class="stat-value" id="transaksiHariIni">0</p>
+                            <small class="stat-label">Jumlah pesanan</small>
+                        </div>
+                    </div>
+
+                    <div class="stat-card menu-count">
+                        <div class="stat-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Menu</h3>
+                            <p class="stat-value" id="totalMenu">0</p>
+                            <small class="stat-label">Item tersedia</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Menu Management Tab -->
+            <section id="menu" class="tab-panel">
+                <div class="page-header">
+                    <h2><i class="fas fa-list-ul"></i> Kelola Menu</h2>
+                    <button class="btn btn-primary" id="showAddMenuBtn">
+                        <i class="fas fa-plus"></i> Tambah Menu Baru
+                    </button>
+                </div>
+
+                <!-- Add Menu Form Modal -->
+                <!-- Add Menu Form Modal -->
+                <div id="addMenuModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="addMenuModalTitle"><i class="fas fa-plus-circle"></i> Tambah Menu Baru</h3>
+                            <button class="modal-close" id="closeAddMenuModal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <form id="addMenuForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="namaMenu">Nama Menu</label>
+                                    <input type="text" id="namaMenu" required placeholder="Contoh: Kopi Susu Babol">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hargaMenu">Harga</label>
+                                    <input type="number" id="hargaMenu" required placeholder="15000" min="0">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="kategoriMenu">Kategori</label>
+                                    <select id="kategoriMenu" required>
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="main_menu">Main Menu</option>
+                                        <option value="drinks">Drinks</option>
+                                        <option value="additional">Additional</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="stokMenuContainer">
+                                    <label for="stokMenu">Jumlah Stok</label>
+                                    <input type="number" id="stokMenu" required placeholder="Contoh: 100" min="0"
+                                        value="0">
+                                </div>
+                            </div>
+                            <div class="form-group form-group-checkbox">
+                                <input type="checkbox" id="isInfiniteStock">
+                                <label for="isInfiniteStock">Stok Tak Terbatas (tidak akan berkurang)</label>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" id="cancelAddMenu">
+                                    <i class="fas fa-times"></i> Batal
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> Simpan Menu
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <!-- Menu Categories Display -->
+                <div class="menu-categories-container">
+                    <!-- Main Menu -->
+                    <div class="category-panel">
+                        <div class="category-header main-menu">
+                            <i class="fas fa-utensils"></i>
+                            <h3>Main Menu</h3>
+                            <span class="category-count" id="mainMenuCount">0</span>
+                        </div>
+                        <div class="menu-items-grid" id="mainMenuGrid">
+                            <!-- Main menu items akan dimuat di sini -->
+                        </div>
+                    </div>
+
+                    <!-- Drinks -->
+                    <div class="category-panel">
+                        <div class="category-header drinks">
+                            <i class="fas fa-coffee"></i>
+                            <h3>Drinks</h3>
+                            <span class="category-count" id="drinksCount">0</span>
+                        </div>
+                        <div class="menu-items-grid" id="drinksGrid">
+                            <!-- Drinks items akan dimuat di sini -->
+                        </div>
+                    </div>
+
+                    <!-- Additional -->
+                    <div class="category-panel">
+                        <div class="category-header additional">
+                            <i class="fas fa-cookie-bite"></i>
+                            <h3>Additional</h3>
+                            <span class="category-count" id="additionalCount">0</span>
+                        </div>
+                        <div class="menu-items-grid" id="additionalGrid">
+                            <!-- Additional items akan dimuat di sini -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kasir Tab -->
+            <section id="kasir" class="tab-panel">
+                <div class="page-header">
+                    <h2><i class="fas fa-cash-register"></i> Point of Sale</h2>
+                    <p>Sistem kasir Warkop Babol</p>
+                </div>
+
+                <div class="kasir-container">
+                    <div class="menu-selection-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-coffee"></i> Menu Tersedia</h3>
+                        </div>
+
+                        <!-- Category Tabs -->
+                        <div class="category-tabs">
+                            <button class="category-tab active" data-category="main_menu">
+                                <i class="fas fa-utensils"></i> Main Menu
+                            </button>
+                            <button class="category-tab" data-category="drinks">
+                                <i class="fas fa-coffee"></i> Drinks
+                            </button>
+                            <button class="category-tab" data-category="additional">
+                                <i class="fas fa-cookie-bite"></i> Additional
+                            </button>
+                        </div>
+
+                        <!-- Menu Items -->
+                        <div class="menu-items-container">
+                            <div id="kasirMainMenu" class="menu-category-grid active">
+                                <!-- Main menu items akan dimuat di sini -->
+                            </div>
+                            <div id="kasirDrinks" class="menu-category-grid">
+                                <!-- Drinks items akan dimuat di sini -->
+                            </div>
+                            <div id="kasirAdditional" class="menu-category-grid">
+                                <!-- Additional items akan dimuat di sini -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-shopping-cart"></i> Pesanan</h3>
+                            <button class="btn btn-outline" id="clearOrderBtn">
+                                <i class="fas fa-trash"></i> Bersihkan
+                            </button>
+                        </div>
+
+                        <div class="order-items-container" id="orderItemsContainer">
+                            <div class="empty-order">
+                                <i class="fas fa-shopping-cart"></i>
+                                <p>Belum ada pesanan</p>
+                                <small>Pilih menu dari panel sebelah kiri</small>
+                            </div>
+                        </div>
+
+                        <div class="order-summary">
+                            <div class="total-section">
+                                <h4>Total Pembayaran</h4>
+                                <p class="total-amount" id="totalAmount">Rp 0</p>
+                            </div>
+                            <button class="btn btn-success btn-large" id="processOrderBtn" disabled>
+                                <i class="fas fa-check-circle"></i> Proses Pesanan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Laporan Tab -->
+            <section id="laporan" class="tab-panel">
+                <div class="page-header">
+                    <h2><i class="fas fa-chart-line"></i> Laporan Keuangan</h2>
+                    <p>Analisis pendapatan Warkop Babol</p>
+                </div>
+
+                <div class="report-controls">
+                    <div class="date-range-selector">
+                        <h3><i class="fas fa-calendar-alt"></i> Filter Periode</h3>
+                        <form id="reportForm">
+                            <div class="date-inputs">
+                                <div class="form-group">
+                                    <label for="tanggalMulai">Tanggal Mulai</label>
+                                    <input type="date" id="tanggalMulai" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tanggalAkhir">Tanggal Akhir</label>
+                                    <input type="date" id="tanggalAkhir" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Generate Laporan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="reportResult" class="report-result">
+                    <!-- Hasil laporan akan ditampilkan di sini -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Receipt Modal -->
+        <div id="receiptModal" class="modal-overlay">
+            <div class="modal-content receipt-modal">
+                <div class="modal-header">
+                    <h3><i class="fas fa-receipt"></i> Struk Pembelian</h3>
+                    <button class="modal-close" id="closeReceiptModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="receiptContent" class="receipt-content">
+                    <!-- Receipt content akan dimuat di sini -->
+                </div>
+                <div class="receipt-actions">
+                    <button class="btn btn-primary" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Struk
+                    </button>
+                    <button class="btn btn-secondary" id="closeReceiptBtn">
+                        <i class="fas fa-times"></i> Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div id="notification" class="notification">
+            <!-- Notifications akan muncul di sini -->
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-coffee fa-spin"></i>
+                <p>Memuat...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/menu.js"></script>
+    <script src="assets/js/kasir.js"></script>
+    <script src="assets/js/laporan.js"></script>
+</body>
+
+</html>
