@@ -454,6 +454,25 @@ class Kasir {
     WarkopBabol.currentOrder = [];
   }
 }
+// Tambahkan di file JavaScript utama Anda
+function fixCardTextTruncation() {
+  const cardTitles = document.querySelectorAll('.kasir-menu-item h5');
+  
+  cardTitles.forEach(title => {
+    const maxHeight = 2.4 * parseFloat(getComputedStyle(title).lineHeight);
+    
+    if (title.scrollHeight > maxHeight) {
+      // Jika teks overflow, gunakan single line ellipsis
+      title.classList.add('js-truncate');
+    }
+  });
+}
+
+// Jalankan setelah DOM loaded dan setiap kali menu diupdate
+document.addEventListener('DOMContentLoaded', fixCardTextTruncation);
+
+// Jika menggunakan dynamic loading, panggil juga setelah menu dimuat
+// Contoh: setelah Kasir.loadMenuItems() atau sejenisnya
 
 // Export for use in other files
 window.Kasir = Kasir;
