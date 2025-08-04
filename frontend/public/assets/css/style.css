@@ -1155,6 +1155,35 @@ body {
 }
 /* ================== KARTU MENU DI HALAMAN KASIR ================= */
 
+/* ===== PERBAIKAN KHUSUS CONTAINER MENU KASIR ===== */
+
+/* Container utama menu kasir */
+.menu-items-container {
+  flex: 1;
+  overflow: hidden;
+  /* Tambahkan ini untuk memastikan container tidak meluber */
+  min-height: 0;
+}
+
+/* Grid kategori menu di kasir */
+.menu-category-grid {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  
+  /* FIX PENTING - Tambahkan ini */
+  min-width: 0;
+  width: 100%;
+}
+
+.menu-category-grid.active {
+  display: grid;
+}
+
+/* Kartu menu di kasir - Perbaikan lengkap */
 .kasir-menu-item {
   background: var(--white);
   border-radius: 12px;
@@ -1164,39 +1193,54 @@ body {
   transition: all 0.3s ease;
   border: 2px solid transparent;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  /* Dimensi minimum */
+  
+  /* Layout dengan grid untuk kontrol yang lebih baik */
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+  
   min-height: 100px;
   max-height: 120px;
-
-  /* FIX PENTING */
+  
+  /* FIX UTAMA untuk teks terpotong */
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
+  word-wrap: break-word;
 }
 
-/* Judul menu pada kartu kasir */
+.kasir-menu-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--light-pink);
+  box-shadow: 0 8px 20px var(--shadow-light);
+}
+
+/* Judul menu kasir - Perbaikan teks terpotong */
 .kasir-menu-item h5 {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-dark);
-  margin-bottom: 8px;
   line-height: 1.2;
-
-  /* Truncation 2-baris */
+  
+  /* Grid row pertama */
+  grid-row: 1;
+  
+  /* Truncation yang benar */
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-
-  /* FIX TAMBAHAN */
+  
+  /* FIX PENTING */
   min-width: 0;
-  max-height: 2.4em;  /* 2 baris × 1.2 line-height */
+  max-width: 100%;
+  width: 100%;
+  max-height: 2.4em; /* 2 baris × 1.2 line-height */
   word-break: break-word;
+  
+  /* Margin hanya di bawah */
+  margin: 0 0 auto 0;
 }
 
 /* Harga pada kartu kasir */
@@ -1204,8 +1248,19 @@ body {
   font-size: 1rem;
   font-weight: 700;
   color: var(--primary-pink);
-  margin-top: auto;
+  
+  /* Grid row kedua */
+  grid-row: 2;
+  
+  /* Posisi di bawah */
+  align-self: end;
+  margin: 0;
+  
+  /* Pastikan tidak overflow */
+  min-width: 0;
+  max-width: 100%;
 }
+
 .menu-selection-panel,
 .order-panel {
   background: var(--off-white);
