@@ -191,7 +191,6 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -395,13 +394,8 @@ body {
 
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
@@ -409,7 +403,6 @@ body {
     opacity: 0;
     transform: translateY(50px) scale(0.95);
   }
-
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -609,7 +602,6 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -794,13 +786,8 @@ body {
 
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
@@ -808,7 +795,6 @@ body {
     opacity: 0;
     transform: translateY(50px) scale(0.95);
   }
-
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -822,12 +808,10 @@ body {
   background: var(--white);
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 650px;
-  /* Sedikit lebih lebar untuk form yang lebih nyaman */
+  max-width: 650px; /* Sedikit lebih lebar untuk form yang lebih nyaman */
   width: 95%;
   max-height: 90vh;
-  overflow: hidden;
-  /* Sembunyikan overflow utama */
+  overflow: hidden; /* Sembunyikan overflow utama */
   display: flex;
   flex-direction: column;
   animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -836,8 +820,7 @@ body {
 /* 2. Header Modal yang Lebih Elegan */
 .modal-header {
   padding: 25px 30px;
-  border-bottom: 2px solid var(--light-gray);
-  /* Garis pemisah yang lebih soft */
+  border-bottom: 2px solid var(--light-gray); /* Garis pemisah yang lebih soft */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -845,8 +828,7 @@ body {
 }
 
 .modal-header h3 {
-  font-size: 1.6rem;
-  /* Ukuran font lebih besar */
+  font-size: 1.6rem; /* Ukuran font lebih besar */
   font-weight: 600;
   color: var(--text-dark);
   display: flex;
@@ -861,16 +843,14 @@ body {
 /* 3. Form yang Lebih Terstruktur dan Rapi */
 #addMenuForm {
   padding: 30px;
-  overflow-y: auto;
-  /* Scroll hanya pada area form jika konten panjang */
+  overflow-y: auto; /* Scroll hanya pada area form jika konten panjang */
   flex-grow: 1;
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 25px;
-  /* Jarak antar kolom lebih besar */
+  gap: 25px; /* Jarak antar kolom lebih besar */
   margin-bottom: 25px;
 }
 
@@ -881,10 +861,8 @@ body {
 
 .form-group label {
   display: block;
-  margin-bottom: 10px;
-  /* Jarak lebih besar antara label dan input */
-  font-weight: 500;
-  /* Font weight lebih soft */
+  margin-bottom: 10px; /* Jarak lebih besar antara label dan input */
+  font-weight: 500; /* Font weight lebih soft */
   color: var(--dark-gray);
   font-size: 0.9rem;
 }
@@ -908,8 +886,7 @@ body {
   outline: none;
   border-color: var(--primary-pink);
   background: var(--white);
-  box-shadow: 0 0 0 4px var(--shadow-light);
-  /* Efek focus lebih jelas */
+  box-shadow: 0 0 0 4px var(--shadow-light); /* Efek focus lebih jelas */
 }
 
 /* Placeholder yang lebih baik */
@@ -920,8 +897,7 @@ body {
 
 /* 4. Checkbox Stok Tak Terbatas yang Lebih Stylish */
 .form-group-checkbox {
-  grid-column: 1 / -1;
-  /* Mengambil lebar penuh */
+  grid-column: 1 / -1; /* Mengambil lebar penuh */
   display: flex;
   align-items: center;
   gap: 12px;
@@ -957,15 +933,13 @@ body {
 #stokMenuContainer {
   transition: all 0.4s ease;
   overflow: hidden;
-  max-height: 100px;
-  /* Tinggi awal untuk transisi */
+  max-height: 100px; /* Tinggi awal untuk transisi */
 }
 
 #stokMenuContainer.hidden {
   opacity: 0;
   max-height: 0;
-  margin-bottom: -25px;
-  /* Kompensasi margin-bottom dari .form-grid */
+  margin-bottom: -25px; /* Kompensasi margin-bottom dari .form-grid */
   pointer-events: none;
 }
 
@@ -977,8 +951,7 @@ body {
   display: flex;
   gap: 15px;
   justify-content: flex-end;
-  background-color: var(--off-white);
-  /* Latar belakang yang sedikit berbeda */
+  background-color: var(--off-white); /* Latar belakang yang sedikit berbeda */
   flex-shrink: 0;
 }
 
@@ -1091,15 +1064,11 @@ body {
 }
 
 /* ===== IMPROVED MENU CARD STYLING ===== */
-.menu-items-grid,
-.menu-category-grid {
-  padding: 15px;
+.menu-items-grid {
+  padding: 25px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 18px;
-
-  /* Tambahkan ini untuk mencegah overflow */
-  overflow: hidden;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
 }
 
 .menu-item-card {
@@ -1115,12 +1084,7 @@ body {
   justify-content: space-between;
   min-height: 180px;
   max-height: 200px;
-
-  /* SOLUSI UTAMA - Tambahkan ini */
-  min-width: 0;
-  overflow: hidden;
 }
-
 
 .menu-item-card:hover {
   transform: translateY(-5px);
@@ -1134,28 +1098,19 @@ body {
   color: var(--text-dark);
   margin-bottom: 10px;
   line-height: 1.3;
-
-  /* Perbaiki truncation */
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-
-  /* PENTING - Tambahkan ini */
-  min-width: 0;
-  max-height: 2.6em;
-  /* 2 lines × 1.3 line-height */
-  word-break: break-word;
 }
-
 
 .menu-item-card .price {
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--primary-pink);
   margin-bottom: 15px;
-  grid-row: 2;
+  flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1198,7 +1153,59 @@ body {
   gap: 30px;
   height: 700px;
 }
+/* ================== KARTU MENU DI HALAMAN KASIR ================= */
 
+.kasir-menu-item {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  /* Dimensi minimum */
+  min-height: 100px;
+  max-height: 120px;
+
+  /* FIX PENTING */
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Judul menu pada kartu kasir */
+.kasir-menu-item h5 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  line-height: 1.2;
+
+  /* Truncation 2-baris */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+
+  /* FIX TAMBAHAN */
+  min-width: 0;
+  max-height: 2.4em;  /* 2 baris × 1.2 line-height */
+  word-break: break-word;
+}
+
+/* Harga pada kartu kasir */
+.kasir-menu-item .price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-pink);
+  margin-top: auto;
+}
 .menu-selection-panel,
 .order-panel {
   background: var(--off-white);
@@ -1845,13 +1852,8 @@ body {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -1859,16 +1861,16 @@ body {
   .menu-items-grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
-
+  
   .kasir-container {
     grid-template-columns: 1fr;
     height: auto;
   }
-
+  
   .menu-selection-panel {
     order: 2;
   }
-
+  
   .order-panel {
     order: 1;
     min-height: 400px;
@@ -1879,117 +1881,117 @@ body {
   .app-container {
     padding: 15px;
   }
-
+  
   .header-content {
     flex-direction: column;
     gap: 20px;
     text-align: center;
   }
-
+  
   .logo-text h1 {
     font-size: 2rem;
   }
-
+  
   .nav-container {
     flex-direction: column;
     gap: 8px;
   }
-
+  
   .nav-item {
     padding: 15px;
     font-size: 0.9rem;
   }
-
+  
   .tab-panel {
     padding: 20px;
   }
-
+  
   .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
-
+  
   .stats-container {
     grid-template-columns: 1fr;
   }
-
+  
   .form-grid,
   .date-inputs {
     grid-template-columns: 1fr;
   }
-
+  
   .menu-items-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 15px;
     padding: 20px;
   }
-
+  
   .menu-item-card {
     padding: 15px;
     min-height: 160px;
     max-height: 180px;
   }
-
+  
   .menu-item-card h4 {
     font-size: 1rem;
   }
-
+  
   .menu-item-card .price {
     font-size: 1.2rem;
   }
-
+  
   .menu-item-actions {
     flex-direction: column;
     gap: 5px;
   }
-
+  
   .btn-sm {
     padding: 8px;
     font-size: 0.7rem;
   }
-
+  
   .category-tabs {
     flex-direction: column;
     gap: 8px;
   }
-
+  
   .modal-content {
     width: 95%;
     margin: 20px;
   }
-
+  
   .form-actions {
     flex-direction: column;
   }
-
+  
   .receipt-actions {
     flex-direction: column;
   }
-
+  
   .quick-filter-buttons {
     flex-direction: column;
   }
-
+  
   .quick-filter-buttons .btn {
     width: 100%;
   }
-
+  
   .report-actions {
     flex-direction: column;
   }
-
+  
   .report-actions .btn {
     width: 100%;
     margin: 5px 0;
   }
-
+  
   .receipt-item {
     grid-template-columns: 1fr;
     text-align: center;
     gap: 5px;
   }
-
+  
   .summary-stats {
     grid-template-columns: 1fr;
   }
@@ -2000,44 +2002,44 @@ body {
     width: 50px;
     height: 50px;
   }
-
+  
   .logo-icon i {
     font-size: 1.8rem;
   }
-
+  
   .logo-text h1 {
     font-size: 1.5rem;
   }
-
+  
   .stat-card {
     flex-direction: column;
     text-align: center;
   }
-
+  
   .stat-icon {
     width: 60px;
     height: 60px;
   }
-
+  
   .stat-value {
     font-size: 2rem;
   }
-
+  
   .notification {
     right: 15px;
     left: 15px;
     transform: translateY(-100px);
     max-width: none;
   }
-
+  
   .notification.show {
     transform: translateY(0);
   }
-
+  
   .menu-items-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
-
+  
   .menu-item-card {
     min-height: 140px;
     max-height: 160px;
@@ -2087,7 +2089,6 @@ body {
 .slide-up {
   animation: slideUp 0.3s ease;
 }
-
 /* ===== QUICK FILTER IMPROVEMENTS ===== */
 .quick-filter-btn {
   position: relative;
@@ -2117,7 +2118,6 @@ body {
 .btn-danger:hover {
   background: linear-gradient(135deg, #C82333 0%, #DC3545 100%);
 }
-
 .modal-close {
   font-size: 1.5rem;
   cursor: pointer;
@@ -2251,6 +2251,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   min-height: 180px;
+  max-height: 200px;
 }
 
 .menu-item-card:hover {
@@ -2270,27 +2271,18 @@ body {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  /* Tambahan untuk konsistensi */
-  max-height: 2.6em;
-  /* 2 lines × 1.3 line-height */
-  word-break: break-word;
-  /* Handle kata panjang */
 }
-
 
 .menu-item-card .price {
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--primary-pink);
   margin-bottom: 15px;
-  /* Ganti flex-grow dengan margin yang konsisten */
-  margin-top: auto;
-  margin-bottom: 15px;
-  /* Atau gunakan flex yang lebih controlled */
-  flex: 0 0 auto;
-  /* Tidak akan grow/shrink */
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 
 .menu-item-actions {
   display: flex;
@@ -2976,13 +2968,8 @@ body {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -2990,16 +2977,16 @@ body {
   .menu-items-grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
-
+  
   .kasir-container {
     grid-template-columns: 1fr;
     height: auto;
   }
-
+  
   .menu-selection-panel {
     order: 2;
   }
-
+  
   .order-panel {
     order: 1;
     min-height: 400px;
@@ -3010,117 +2997,117 @@ body {
   .app-container {
     padding: 15px;
   }
-
+  
   .header-content {
     flex-direction: column;
     gap: 20px;
     text-align: center;
   }
-
+  
   .logo-text h1 {
     font-size: 2rem;
   }
-
+  
   .nav-container {
     flex-direction: column;
     gap: 8px;
   }
-
+  
   .nav-item {
     padding: 15px;
     font-size: 0.9rem;
   }
-
+  
   .tab-panel {
     padding: 20px;
   }
-
+  
   .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
-
+  
   .stats-container {
     grid-template-columns: 1fr;
   }
-
+  
   .form-grid,
   .date-inputs {
     grid-template-columns: 1fr;
   }
-
+  
   .menu-items-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 15px;
     padding: 20px;
   }
-
+  
   .menu-item-card {
     padding: 15px;
     min-height: 160px;
     max-height: 180px;
   }
-
+  
   .menu-item-card h4 {
     font-size: 1rem;
   }
-
+  
   .menu-item-card .price {
     font-size: 1.2rem;
   }
-
+  
   .menu-item-actions {
     flex-direction: column;
     gap: 5px;
   }
-
+  
   .btn-sm {
     padding: 8px;
     font-size: 0.7rem;
   }
-
+  
   .category-tabs {
     flex-direction: column;
     gap: 8px;
   }
-
+  
   .modal-content {
     width: 95%;
     margin: 20px;
   }
-
+  
   .form-actions {
     flex-direction: column;
   }
-
+  
   .receipt-actions {
     flex-direction: column;
   }
-
+  
   .quick-filter-buttons {
     flex-direction: column;
   }
-
+  
   .quick-filter-buttons .btn {
     width: 100%;
   }
-
+  
   .report-actions {
     flex-direction: column;
   }
-
+  
   .report-actions .btn {
     width: 100%;
     margin: 5px 0;
   }
-
+  
   .receipt-item {
     grid-template-columns: 1fr;
     text-align: center;
     gap: 5px;
   }
-
+  
   .summary-stats {
     grid-template-columns: 1fr;
   }
@@ -3131,44 +3118,44 @@ body {
     width: 50px;
     height: 50px;
   }
-
+  
   .logo-icon i {
     font-size: 1.8rem;
   }
-
+  
   .logo-text h1 {
     font-size: 1.5rem;
   }
-
+  
   .stat-card {
     flex-direction: column;
     text-align: center;
   }
-
+  
   .stat-icon {
     width: 60px;
     height: 60px;
   }
-
+  
   .stat-value {
     font-size: 2rem;
   }
-
+  
   .notification {
     right: 15px;
     left: 15px;
     transform: translateY(-100px);
     max-width: none;
   }
-
+  
   .notification.show {
     transform: translateY(0);
   }
-
+  
   .menu-items-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
-
+  
   .menu-item-card {
     min-height: 140px;
     max-height: 160px;
@@ -3218,7 +3205,6 @@ body {
 .slide-up {
   animation: slideUp 0.3s ease;
 }
-
 /* ===== QUICK FILTER IMPROVEMENTS ===== */
 .quick-filter-btn {
   position: relative;
