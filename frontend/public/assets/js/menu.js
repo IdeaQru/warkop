@@ -213,16 +213,7 @@ class MenuManager {
         message += ` dalam kategori <strong>${categoryNames[this.categoryFilter]}</strong>`;
       }
 
-      if (this.stockFilter) {
-        const stockNames = {
-          available: 'stok tersedia',
-          low: 'stok rendah',
-          out: 'stok habis',
-          infinite: 'stok tak terbatas'
-        };
-        message += ` dengan <strong>${stockNames[this.stockFilter]}</strong>`;
-      }
-
+     
       searchInfo.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
       
       // Show clear filters button if needed
@@ -390,8 +381,6 @@ class MenuManager {
           </button>
         </div>
         
-        ${isOutOfStock ? '<div class="stock-warning">Stok Habis!</div>' : ''}
-        ${isLowStock ? '<div class="stock-warning low">Stok Rendah!</div>' : ''}
       </div>
     `;
   }
