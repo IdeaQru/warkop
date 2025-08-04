@@ -1248,8 +1248,8 @@ body {
 
 /* Judul menu - FIX FINAL */
 .kasir-menu-item h5 {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 500;
   color: var(--text-dark);
   line-height: 1.2;
   

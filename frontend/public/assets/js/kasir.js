@@ -6,14 +6,16 @@ class Kasir {
   static async load() {
     try {
       await this.loadMenuData();
-      
+
       if (!this.eventListenersInitialized) {
         this.initEventListeners();
         this.eventListenersInitialized = true;
       }
-      
+
       this.displayMenuByCategory();
       this.updateOrderDisplay();
+      document.addEventListener('DOMContentLoaded', fixCardTextTruncation);
+
     } catch (error) {
       console.error('Error loading kasir:', error);
       Utils.showNotification('Gagal memuat data kasir', 'error');
@@ -81,7 +83,7 @@ class Kasir {
     document.querySelectorAll('.category-tab').forEach(tab => {
       tab.classList.remove('active');
     });
-    
+
     if (clickedTab) {
       clickedTab.classList.add('active');
     } else {
@@ -150,7 +152,7 @@ class Kasir {
   static getKasirMenuItemHTML(menu) {
     const isOutOfStock = !menu.isInfinite && menu.stok <= 0;
     const stockClass = isOutOfStock ? 'out-of-stock' : '';
-    
+
     let stockBadge;
     if (menu.isInfinite) {
       stockBadge = `<span class="stock-badge-kasir infinite">∞</span>`;
@@ -159,8 +161,8 @@ class Kasir {
     } else {
       stockBadge = `<span class="stock-badge-kasir available">${menu.stok}</span>`;
     }
-    
-    const clickHandler = isOutOfStock 
+
+    const clickHandler = isOutOfStock
       ? `onclick="Utils.showNotification('Stok menu ${menu.nama} sudah habis!', 'warning')"`
       : `onclick="Kasir.addToOrder('${menu._id}', '${menu.nama.replace(/'/g, "\\'")}', ${menu.harga}, ${menu.stok}, ${menu.isInfinite})"`;
 
@@ -208,7 +210,7 @@ class Kasir {
 
   static removeFromOrder(index) {
     const item = WarkopBabol.currentOrder[index];
-    
+
     if (item.jumlah > 1) {
       item.jumlah -= 1;
       item.subtotal = item.harga * item.jumlah;
@@ -232,7 +234,7 @@ class Kasir {
         Utils.showNotification(`Stok ${item.nama} tidak mencukupi! Sisa: ${item.stokTersedia}`, 'warning');
         return;
       }
-      
+
       item.jumlah = newQuantity;
       item.subtotal = item.harga * item.jumlah;
     }
@@ -273,7 +275,7 @@ class Kasir {
   // PERBAIKAN: Tampilkan informasi stok di order item
   static getOrderItemHTML(item, index) {
     const stockInfo = item.isInfinite ? '∞' : `(Sisa: ${item.stokTersedia})`;
-    
+
     return `
       <div class="order-item">
         <div class="order-item-info">
@@ -342,7 +344,7 @@ class Kasir {
 
       // Show receipt dengan data transaksi yang baru
       this.showReceipt(result.data);
-      
+
       // Clear order setelah berhasil
       WarkopBabol.currentOrder = [];
       this.updateOrderDisplay();
@@ -373,7 +375,7 @@ class Kasir {
   static showReceipt(transactionData) {
     const modal = document.getElementById('receiptModal');
     const content = document.getElementById('receiptContent');
-    
+
     if (!modal || !content) return;
 
     const now = Utils.getIndonesiaDate(); // Gunakan waktu Indonesia
@@ -385,27 +387,27 @@ class Kasir {
         <div class="receipt-header">
           <h3>🌸 WARKOP BABOL</h3>
           <p>Struk Pembelian</p>
-          <small>${Utils.formatDate(now, { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}</small>
+          <small>${Utils.formatDate(now, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })}</small>
         </div>
         
         <div class="receipt-items">
           ${WarkopBabol.currentOrder.map(item => {
-            total += item.subtotal;
-            return `
+      total += item.subtotal;
+      return `
               <div class="receipt-item">
                 <span>${item.nama}</span>
                 <span>${item.jumlah}x</span>
                 <span>${Utils.formatRupiah(item.subtotal)}</span>
               </div>
             `;
-          }).join('')}
+    }).join('')}
         </div>
         
         <div class="receipt-total">
@@ -430,7 +432,7 @@ class Kasir {
     // Close receipt modal events
     const closeReceiptBtn = document.getElementById('closeReceiptBtn');
     const closeReceiptModal = document.getElementById('closeReceiptModal');
-    
+
     if (closeReceiptBtn) {
       closeReceiptBtn.onclick = () => ModalManager.hide('receiptModal');
     }
@@ -457,10 +459,10 @@ class Kasir {
 // Tambahkan di file JavaScript utama Anda
 function fixCardTextTruncation() {
   const cardTitles = document.querySelectorAll('.kasir-menu-item h5');
-  
+
   cardTitles.forEach(title => {
     const maxHeight = 2.4 * parseFloat(getComputedStyle(title).lineHeight);
-    
+
     if (title.scrollHeight > maxHeight) {
       // Jika teks overflow, gunakan single line ellipsis
       title.classList.add('js-truncate');
@@ -469,7 +471,6 @@ function fixCardTextTruncation() {
 }
 
 // Jalankan setelah DOM loaded dan setiap kali menu diupdate
-document.addEventListener('DOMContentLoaded', fixCardTextTruncation);
 
 // Jika menggunakan dynamic loading, panggil juga setelah menu dimuat
 // Contoh: setelah Kasir.loadMenuItems() atau sejenisnya
