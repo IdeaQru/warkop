@@ -1297,6 +1297,35 @@ body {
   align-self: end;
   justify-self: center;
 }
+/* === KASIR SEARCH BOX =============================================== */
+.kasir-search-box {
+    margin: 15px 0 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.kasir-search-box i {
+    position: absolute;
+    left: 14px;
+    color: #bbb;
+    font-size: 0.9rem;
+}
+
+.kasir-search-box input {
+    width: 100%;
+    padding: 10px 15px 10px 38px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    transition: all 0.25s;
+    font-family: inherit;
+}
+
+.kasir-search-box input:focus {
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
+    outline: none;
+}
 
 /* ALTERNATIVE: Jika masih bermasalah, gunakan JavaScript fallback */
 .kasir-menu-item h5.js-truncate {
@@ -1309,6 +1338,194 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* === MENU MANAGEMENT SEARCH =============================== */
+.menu-search-container {
+  margin: 20px 0;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #ff69b4;
+}
+
+.menu-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.menu-search-box i {
+  position: absolute;
+  left: 14px;
+  color: #bbb;
+  font-size: 1rem;
+  z-index: 2;
+}
+
+.menu-search-box input {
+  width: 100%;
+  padding: 14px 18px 14px 42px;
+  border: 2px solid #f0f0f0;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  font-size: 1rem;
+  background: #fafafa;
+}
+
+.menu-search-box input:focus {
+  border-color: #ff69b4;
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
+  outline: none;
+  background: white;
+}
+
+.search-filters {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.search-filters select {
+  padding: 10px 15px;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  background: white;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.search-filters select:focus {
+  border-color: #ff69b4;
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
+  outline: none;
+}
+
+/* Search Results Info */
+.search-results-info {
+  margin: 15px 0;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #fff5f8, #ffeef2);
+  border-left: 4px solid #ff69b4;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #333;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-results-info.active {
+  display: flex;
+}
+
+.search-results-info i {
+  color: #ff69b4;
+  margin-right: 8px;
+}
+
+.clear-filters-btn {
+  background: #ff69b4;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-filters-btn:hover {
+  background: #ff1493;
+  transform: translateY(-1px);
+}
+
+/* Hidden items during search */
+.menu-item-card.search-hidden {
+  display: none !important;
+}
+
+/* Category count with filters */
+.category-count.filtered {
+  background: #ff69b4;
+  color: white;
+  font-weight: 600;
+}
+
+/* Empty state during search */
+.category-panel.all-hidden .menu-items-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  color: #888;
+  font-style: italic;
+  text-align: center;
+}
+
+.category-panel.all-hidden .menu-items-grid::after {
+  content: "Tidak ada menu yang cocok dengan filter";
+}
+
+/* Stock warnings */
+.stock-warning {
+  position: absolute;
+  bottom: 45px;
+  right: 10px;
+  background: #ff4757;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.stock-warning.low {
+  background: #ffa502;
+}
+
+/* Enhanced stock badges */
+.stock-badge.low {
+  background: linear-gradient(135deg, #ffa502, #ff7f50);
+  color: white;
+}
+
+.stock-badge.unavailable {
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+}
+
+.stock-badge.available {
+  background: linear-gradient(135deg, #2ed573, #7bed9f);
+}
+
+.stock-badge.infinite {
+  background: linear-gradient(135deg, #70a1ff, #5352ed);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-filters {
+    flex-direction: column;
+  }
+  
+  .search-filters select {
+    min-width: 100%;
+  }
+  
+  .search-results-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .clear-filters-btn {
+    align-self: flex-end;
+  }
 }
 
 .menu-selection-panel,

@@ -1,21 +1,23 @@
-// ===== KASIR (POINT OF SALE) SYSTEM DENGAN MANAJEMEN STOK =====
+// ===== KASIR (POINT OF SALE) SYSTEM DENGAN MANAJEMEN STOK DAN PENCARIAN =====
 class Kasir {
   static currentCategory = 'main_menu';
   static eventListenersInitialized = false;
+  static searchTerm = '';
 
   static async load() {
     try {
       await this.loadMenuData();
-
+      
       if (!this.eventListenersInitialized) {
         this.initEventListeners();
+        this.initSearchBox(); // Tambahan untuk inisialisasi search box
         this.eventListenersInitialized = true;
       }
-
+      
       this.displayMenuByCategory();
       this.updateOrderDisplay();
-      document.addEventListener('DOMContentLoaded', fixCardTextTruncation);
-
+      this.fixCardTextTruncation();
+      
     } catch (error) {
       console.error('Error loading kasir:', error);
       Utils.showNotification('Gagal memuat data kasir', 'error');
@@ -63,6 +65,89 @@ class Kasir {
     }
   }
 
+  /* FITUR PENCARIAN: Inisialisasi search box */
+  static initSearchBox() {
+    const input = document.getElementById('menuSearchInput');
+    if (!input) return;
+
+    // Hindari double binding
+    if (input.dataset.initialized) return;
+    input.dataset.initialized = 'true';
+
+    // Gunakan debounce agar ringan
+    input.addEventListener(
+      'input',
+      Utils.debounce((e) => {
+        this.searchTerm = e.target.value.trim().toLowerCase();
+        this.filterMenuCards();
+      }, 200)
+    );
+
+    // Clear search saat pindah kategori
+    input.addEventListener('focus', () => {
+      if (input.value.trim() === '') {
+        this.searchTerm = '';
+        this.filterMenuCards();
+      }
+    });
+  }
+
+  /* FITUR PENCARIAN: Sembunyikan/tampilkan kartu menu sesuai kata kunci */
+  static filterMenuCards() {
+    const search = this.searchTerm;
+    const containerSelector = this.getActiveContainerSelector();
+
+    document.querySelectorAll(`${containerSelector} .kasir-menu-item`).forEach((card) => {
+      const name = card.dataset.name || '';
+      const match = search.length < 2 ? true : name.includes(search);
+      card.style.display = match ? 'block' : 'none';
+    });
+
+    // Tampilkan pesan jika tidak ada hasil
+    this.showSearchResults(search);
+  }
+
+  /* Helper: Dapatkan selector container yang aktif */
+  static getActiveContainerSelector() {
+    const containerMap = {
+      main_menu: '#kasirMainMenu',
+      drinks: '#kasirDrinks', 
+      additional: '#kasirAdditional'
+    };
+    return containerMap[this.currentCategory];
+  }
+
+  /* Tampilkan pesan hasil pencarian */
+  static showSearchResults(searchTerm) {
+    if (searchTerm.length < 2) return;
+
+    const containerSelector = this.getActiveContainerSelector();
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+
+    const visibleCards = container.querySelectorAll('.kasir-menu-item[style*="block"], .kasir-menu-item:not([style*="none"])');
+    
+    // Hapus pesan pencarian yang sudah ada
+    const existingMessage = container.querySelector('.search-result-message');
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    // Tampilkan pesan jika tidak ada hasil
+    if (visibleCards.length === 0) {
+      const noResultMessage = document.createElement('div');
+      noResultMessage.className = 'search-result-message';
+      noResultMessage.innerHTML = `
+        <div class="no-search-result">
+          <i class="fas fa-search"></i>
+          <p>Tidak ada menu ditemukan</p>
+          <small>Coba kata kunci lain untuk "${searchTerm}"</small>
+        </div>
+      `;
+      container.appendChild(noResultMessage);
+    }
+  }
+
   static debouncedProcessOrder = this.debounce(() => {
     this.processOrder();
   }, 1000);
@@ -80,10 +165,11 @@ class Kasir {
   }
 
   static switchCategory(category, clickedTab = null) {
+    // Update active tab
     document.querySelectorAll('.category-tab').forEach(tab => {
       tab.classList.remove('active');
     });
-
+    
     if (clickedTab) {
       clickedTab.classList.add('active');
     } else {
@@ -91,6 +177,7 @@ class Kasir {
       if (targetTab) targetTab.classList.add('active');
     }
 
+    // Update active content
     document.querySelectorAll('.menu-category-grid').forEach(grid => {
       grid.classList.remove('active');
     });
@@ -106,7 +193,15 @@ class Kasir {
       targetGrid.classList.add('active');
     }
 
+    // Update current category dan filter ulang
     this.currentCategory = category;
+    
+    // Reset search box saat pindah kategori
+    const searchInput = document.getElementById('menuSearchInput');
+    if (searchInput && this.searchTerm) {
+      // Terapkan filter pada kategori baru
+      setTimeout(() => this.filterMenuCards(), 100);
+    }
   }
 
   static displayMenuByCategory() {
@@ -130,12 +225,17 @@ class Kasir {
 
       container.innerHTML = menus.map(menu => this.getKasirMenuItemHTML(menu)).join('');
     });
+
+    // Terapkan filter setelah menu ditampilkan
+    if (this.searchTerm) {
+      setTimeout(() => this.filterMenuCards(), 100);
+    }
   }
 
   static getEmptyMenuHTML(category) {
     const titles = {
       main_menu: 'Main Menu',
-      drinks: 'Drinks',
+      drinks: 'Drinks', 
       additional: 'Additional'
     };
 
@@ -148,11 +248,11 @@ class Kasir {
     `;
   }
 
-  // PERBAIKAN UTAMA: Menampilkan stok dan validasi saat diklik
+  // PERBAIKAN: Menampilkan stok dan validasi saat diklik + data-name untuk pencarian
   static getKasirMenuItemHTML(menu) {
     const isOutOfStock = !menu.isInfinite && menu.stok <= 0;
     const stockClass = isOutOfStock ? 'out-of-stock' : '';
-
+    
     let stockBadge;
     if (menu.isInfinite) {
       stockBadge = `<span class="stock-badge-kasir infinite">∞</span>`;
@@ -161,13 +261,15 @@ class Kasir {
     } else {
       stockBadge = `<span class="stock-badge-kasir available">${menu.stok}</span>`;
     }
-
-    const clickHandler = isOutOfStock
+    
+    const clickHandler = isOutOfStock 
       ? `onclick="Utils.showNotification('Stok menu ${menu.nama} sudah habis!', 'warning')"`
       : `onclick="Kasir.addToOrder('${menu._id}', '${menu.nama.replace(/'/g, "\\'")}', ${menu.harga}, ${menu.stok}, ${menu.isInfinite})"`;
 
     return `
-      <div class="kasir-menu-item ${stockClass}" ${clickHandler}>
+      <div class="kasir-menu-item ${stockClass}" 
+           data-name="${menu.nama.toLowerCase()}" 
+           ${clickHandler}>
         ${stockBadge}
         <h5>${menu.nama}</h5>
         <p class="price">${Utils.formatRupiah(menu.harga)}</p>
@@ -175,7 +277,7 @@ class Kasir {
     `;
   }
 
-  // PERBAIKAN UTAMA: Validasi stok saat menambah ke pesanan
+  // PERBAIKAN: Validasi stok saat menambah ke pesanan
   static addToOrder(id, nama, harga, stokTersedia, isInfinite) {
     // Bypass cek stok jika item tak terbatas
     if (!isInfinite) {
@@ -210,7 +312,7 @@ class Kasir {
 
   static removeFromOrder(index) {
     const item = WarkopBabol.currentOrder[index];
-
+    
     if (item.jumlah > 1) {
       item.jumlah -= 1;
       item.subtotal = item.harga * item.jumlah;
@@ -234,7 +336,7 @@ class Kasir {
         Utils.showNotification(`Stok ${item.nama} tidak mencukupi! Sisa: ${item.stokTersedia}`, 'warning');
         return;
       }
-
+      
       item.jumlah = newQuantity;
       item.subtotal = item.harga * item.jumlah;
     }
@@ -275,7 +377,7 @@ class Kasir {
   // PERBAIKAN: Tampilkan informasi stok di order item
   static getOrderItemHTML(item, index) {
     const stockInfo = item.isInfinite ? '∞' : `(Sisa: ${item.stokTersedia})`;
-
+    
     return `
       <div class="order-item">
         <div class="order-item-info">
@@ -308,7 +410,7 @@ class Kasir {
     }
   }
 
-  // PERBAIKAN UTAMA: Process order yang akan mengurangi stok secara otomatis
+  // PERBAIKAN: Process order yang akan mengurangi stok secara otomatis
   static async processOrder() {
     if (WarkopBabol.currentOrder.length === 0) {
       Utils.showNotification('Tidak ada pesanan untuk diproses', 'warning');
@@ -344,7 +446,7 @@ class Kasir {
 
       // Show receipt dengan data transaksi yang baru
       this.showReceipt(result.data);
-
+      
       // Clear order setelah berhasil
       WarkopBabol.currentOrder = [];
       this.updateOrderDisplay();
@@ -375,7 +477,7 @@ class Kasir {
   static showReceipt(transactionData) {
     const modal = document.getElementById('receiptModal');
     const content = document.getElementById('receiptContent');
-
+    
     if (!modal || !content) return;
 
     const now = Utils.getIndonesiaDate(); // Gunakan waktu Indonesia
@@ -387,27 +489,27 @@ class Kasir {
         <div class="receipt-header">
           <h3>🌸 WARKOP BABOL</h3>
           <p>Struk Pembelian</p>
-          <small>${Utils.formatDate(now, {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })}</small>
+          <small>${Utils.formatDate(now, { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}</small>
         </div>
         
         <div class="receipt-items">
           ${WarkopBabol.currentOrder.map(item => {
-      total += item.subtotal;
-      return `
+            total += item.subtotal;
+            return `
               <div class="receipt-item">
                 <span>${item.nama}</span>
                 <span>${item.jumlah}x</span>
                 <span>${Utils.formatRupiah(item.subtotal)}</span>
               </div>
             `;
-    }).join('')}
+          }).join('')}
         </div>
         
         <div class="receipt-total">
@@ -432,13 +534,29 @@ class Kasir {
     // Close receipt modal events
     const closeReceiptBtn = document.getElementById('closeReceiptBtn');
     const closeReceiptModal = document.getElementById('closeReceiptModal');
-
+    
     if (closeReceiptBtn) {
       closeReceiptBtn.onclick = () => ModalManager.hide('receiptModal');
     }
     if (closeReceiptModal) {
       closeReceiptModal.onclick = () => ModalManager.hide('receiptModal');
     }
+  }
+
+  // Fix text truncation untuk card titles
+  static fixCardTextTruncation() {
+    setTimeout(() => {
+      const cardTitles = document.querySelectorAll('.kasir-menu-item h5');
+      
+      cardTitles.forEach(title => {
+        const lineHeight = parseFloat(getComputedStyle(title).lineHeight);
+        const maxHeight = 2.4 * lineHeight;
+
+        if (title.scrollHeight > maxHeight) {
+          title.classList.add('js-truncate');
+        }
+      });
+    }, 100);
   }
 
   // Utility functions
@@ -453,27 +571,17 @@ class Kasir {
   static reset() {
     this.eventListenersInitialized = false;
     this.currentCategory = 'main_menu';
+    this.searchTerm = '';
     WarkopBabol.currentOrder = [];
+    
+    // Reset search input
+    const searchInput = document.getElementById('menuSearchInput');
+    if (searchInput) {
+      searchInput.value = '';
+      searchInput.dataset.initialized = '';
+    }
   }
 }
-// Tambahkan di file JavaScript utama Anda
-function fixCardTextTruncation() {
-  const cardTitles = document.querySelectorAll('.kasir-menu-item h5');
-
-  cardTitles.forEach(title => {
-    const maxHeight = 2.4 * parseFloat(getComputedStyle(title).lineHeight);
-
-    if (title.scrollHeight > maxHeight) {
-      // Jika teks overflow, gunakan single line ellipsis
-      title.classList.add('js-truncate');
-    }
-  });
-}
-
-// Jalankan setelah DOM loaded dan setiap kali menu diupdate
-
-// Jika menggunakan dynamic loading, panggil juga setelah menu dimuat
-// Contoh: setelah Kasir.loadMenuItems() atau sejenisnya
 
 // Export for use in other files
 window.Kasir = Kasir;

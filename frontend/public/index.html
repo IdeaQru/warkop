@@ -114,7 +114,23 @@
                         <i class="fas fa-plus"></i> Tambah Menu Baru
                     </button>
                 </div>
-
+                <!-- Search Box untuk Kelola Menu -->
+                <div class="menu-search-container">
+                    <div class="menu-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="menuManagementSearchInput"
+                            placeholder="Cari menu untuk dikelola… (min 2 huruf)" autocomplete="off" />
+                    </div>
+                    <div class="search-filters">
+                        <select id="categoryFilter">
+                            <option value="">Semua Kategori</option>
+                            <option value="main_menu">Main Menu</option>
+                            <option value="drinks">Drinks</option>
+                            <option value="additional">Additional</option>
+                        </select>
+                  
+                    </div>
+                </div>
                 <!-- Add Menu Form Modal -->
                 <div id="addMenuModal" class="modal-overlay">
                     <div class="modal-content">
@@ -213,6 +229,11 @@
                 <div class="page-header">
                     <h2><i class="fas fa-cash-register"></i> Point of Sale</h2>
                     <p>Sistem kasir Warkop Babol</p>
+                </div>
+                <!-- Search Box -->
+                <div class="kasir-search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="menuSearchInput" placeholder="Cari menu… (min 2 huruf)" autocomplete="off" />
                 </div>
 
                 <div class="kasir-container">
