@@ -6,7 +6,7 @@ class LaporanManager {
     try {
       this.initEventListeners();
       this.setDefaultDates();
-      
+
       // Hanya tambah quick filters jika belum ada
       if (!this.quickFiltersAdded) {
         this.addQuickDateFilters();
@@ -24,7 +24,7 @@ class LaporanManager {
       // Remove existing event listener jika ada
       const newForm = reportForm.cloneNode(true);
       reportForm.parentNode.replaceChild(newForm, reportForm);
-      
+
       // Add fresh event listener
       newForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -46,7 +46,7 @@ class LaporanManager {
 
       const today = Utils.getIndonesiaDateString();
       this.setDateInputs(today);
-      
+
     } catch (error) {
       console.error('Error setting default dates:', error);
       // Fallback ke tanggal lokal
@@ -58,7 +58,7 @@ class LaporanManager {
   static setDateInputs(dateString) {
     const tanggalMulaiInput = document.getElementById('tanggalMulai');
     const tanggalAkhirInput = document.getElementById('tanggalAkhir');
-    
+
     if (tanggalMulaiInput && !tanggalMulaiInput.value) {
       tanggalMulaiInput.value = dateString;
       console.log('📅 Laporan - Set tanggalMulai to:', dateString);
@@ -102,7 +102,7 @@ class LaporanManager {
     const dateRangeSelector = reportControls.querySelector('.date-range-selector');
     if (dateRangeSelector) {
       dateRangeSelector.insertAdjacentHTML('afterend', quickFiltersHTML);
-      
+
       // Add event listeners untuk quick filter buttons
       this.attachQuickFilterListeners();
     }
@@ -191,7 +191,7 @@ class LaporanManager {
       document.querySelectorAll('.quick-filter-btn').forEach(btn => {
         btn.classList.remove('active');
       });
-      
+
       if (clickedButton) {
         clickedButton.classList.add('active');
       }
@@ -264,7 +264,6 @@ class LaporanManager {
       return;
     }
 
-    // PERBAIKAN: Validasi data
     if (!Array.isArray(data)) {
       console.error('Data laporan harus berupa array');
       reportResult.innerHTML = this.getEmptyReportHTML(tanggalMulai, tanggalAkhir);
@@ -279,42 +278,33 @@ class LaporanManager {
     let totalKeseluruhan = 0;
     let totalTransaksi = data.length;
 
-    // PERBAIKAN: Validasi struktur data transaksi
     const tableRows = data.map((transaksi, index) => {
       try {
-        // Pastikan transaksi memiliki struktur yang benar
         const totalHarga = transaksi.total_harga || 0;
         const items = transaksi.items || [];
         const tanggal = transaksi.tanggal || 'Tanggal tidak tersedia';
+        const paymentType = transaksi.tipe_pembayaran || 'Tunai';  // Adding payment type (cash or non-cash)
 
         totalKeseluruhan += totalHarga;
-        
-        // Format items yang dibeli dengan validasi
+
         const itemsList = items.map(item => {
           const namaMenu = item.nama_menu || item.nama || 'Item tidak dikenal';
           const jumlah = item.jumlah || 0;
           return `${namaMenu} (${jumlah}x)`;
         }).join(', ');
 
-        // Hitung total item dengan validasi
         const totalItems = items.reduce((sum, item) => sum + (item.jumlah || 0), 0);
 
         return `
           <tr>
             <td class="text-center">${index + 1}</td>
-            <td>
-              <strong>${tanggal}</strong>
-            </td>
-            <td>
-              <div class="transaction-items">
-                ${itemsList || 'Tidak ada item'}
-              </div>
-            </td>
+            <td><strong>${tanggal}</strong></td>
+            <td><div class="transaction-items">${itemsList || 'Tidak ada item'}</div></td>
+            <td class="text-center"><span class="badge">${totalItems}</span></td>
+            <td class="text-right"><strong class="text-pink">${Utils.formatRupiah(totalHarga)}</strong></td>
+            <td class="text-center">${paymentType}</td>  <!-- Displaying Payment Type -->
             <td class="text-center">
-              <span class="badge">${totalItems}</span>
-            </td>
-            <td class="text-right">
-              <strong class="text-pink">${Utils.formatRupiah(totalHarga)}</strong>
+              <button class="btn btn-danger btn-sm" onclick="LaporanManager.deleteTransaction(${index})">Delete</button>
             </td>
           </tr>
         `;
@@ -323,7 +313,7 @@ class LaporanManager {
         return `
           <tr>
             <td class="text-center">${index + 1}</td>
-            <td colspan="4">Error memproses data transaksi</td>
+            <td colspan="6">Error memproses data transaksi</td>
           </tr>
         `;
       }
@@ -344,6 +334,8 @@ class LaporanManager {
               <th width="40%"><i class="fas fa-shopping-cart"></i> Item yang Dibeli</th>
               <th class="text-center" width="15%"><i class="fas fa-cube"></i> Total Item</th>
               <th class="text-right" width="20%"><i class="fas fa-money-bill-wave"></i> Total Harga</th>
+              <th class="text-center" width="10%"><i class="fas fa-credit-card"></i> Pembayaran</th> <!-- Adding column for payment type -->
+              <th class="text-center" width="10%"><i class="fas fa-cogs"></i> Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -392,8 +384,8 @@ class LaporanManager {
     `;
 
     reportResult.innerHTML = reportHTML;
-    
-    // Store data untuk export
+
+    // Store data for export
     this.currentReportData = {
       data: data,
       tanggalMulai: tanggalMulai,
@@ -401,10 +393,118 @@ class LaporanManager {
       totalKeseluruhan: totalKeseluruhan,
       totalTransaksi: totalTransaksi
     };
-    
+
     // Scroll to result
     reportResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+  // Show the edit modal with the transaction data
+  // Show the edit modal with the transaction data
+  static editTransaction(index) {
+    const transaksi = this.currentReportData.data[index];
+    console.log('Editing transaction', transaksi);
+
+    // Open the modal (if you have an edit modal in the HTML)
+    const modal = document.getElementById('editTransactionModal');
+    const namaMenuInput = document.getElementById('editNamaMenu');
+    const hargaInput = document.getElementById('editHarga');
+    const jumlahInput = document.getElementById('editJumlah');
+    const tipePembayaranInput = document.getElementById('editTipePembayaran');
+
+    // Set current values in the modal form
+    namaMenuInput.value = transaksi.items[0].nama_menu; // Assuming one item per transaction for simplicity
+    hargaInput.value = transaksi.items[0].harga;
+    jumlahInput.value = transaksi.items[0].jumlah;
+    tipePembayaranInput.value = transaksi.tipe_pembayaran;
+
+    // Show the modal
+    modal.style.display = 'block';
+
+    // Handle form submission for editing
+    const saveButton = document.getElementById('saveEditTransaction');
+    saveButton.onclick = async () => {
+      try {
+        // Get updated values from the form
+        const updatedNamaMenu = namaMenuInput.value;
+        const updatedHarga = parseInt(hargaInput.value, 10);
+        const updatedJumlah = parseInt(jumlahInput.value, 10);
+        const updatedTipePembayaran = tipePembayaranInput.value;
+
+        if (isNaN(updatedHarga) || isNaN(updatedJumlah)) {
+          Utils.showNotification('Harga dan jumlah harus valid', 'error');
+          return;
+        }
+
+        // Create updated transaction data
+        const updatedTransaction = {
+          items: [{
+            nama_menu: updatedNamaMenu,
+            harga: updatedHarga,
+            jumlah: updatedJumlah
+          }],
+          total_harga: updatedHarga * updatedJumlah,
+          tipe_pembayaran: updatedTipePembayaran
+        };
+
+        // Get the correct transaction ID (ensure it's in string format)
+        const transaksiId = transaksi._id.$oid || transaksi._id; // Fallback if $oid is missing
+
+        // Send the updated transaction to the backend
+        const response = await Utils.apiCall(`/transaksi/${transaksiId}`, {
+          method: 'PUT',
+          body: JSON.stringify(updatedTransaction),
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.success) {
+          // Update the frontend data
+          this.currentReportData.data[index] = { ...this.currentReportData.data[index], ...updatedTransaction };
+
+          // Close the modal and refresh the report
+          modal.style.display = 'none';
+          this.displayDetailReport(this.currentReportData.data, this.currentReportData.tanggalMulai, this.currentReportData.tanggalAkhir);
+
+          // Show success notification
+          Utils.showNotification('Transaksi berhasil diperbarui', 'success');
+        } else {
+          throw new Error('Failed to update transaction');
+        }
+      } catch (error) {
+        console.error('Error editing transaction:', error);
+        Utils.showNotification('Gagal memperbarui transaksi', 'error');
+      }
+    };
+  }
+
+
+  // Close the modal when cancel button is clicked
+  static closeEditModal() {
+    const modal = document.getElementById('editTransactionModal');
+    modal.style.display = 'none';
+  }
+
+
+  static deleteTransaction(index) {
+    const transaksi = this.currentReportData.data[index];
+    const transaksiId = transaksi._id.$oid || transaksi._id;  // Ensure correct ObjectId format
+
+    const confirmed = confirm(`Apakah Anda yakin ingin menghapus transaksi ${transaksiId}?`);
+    if (confirmed) {
+      // Call API to delete the transaction
+      Utils.apiCall(`/transaksi/${transaksiId}`, { method: 'DELETE' })
+        .then(() => {
+          this.currentReportData.data.splice(index, 1); // Remove from frontend
+          this.displayDetailReport(this.currentReportData.data, this.currentReportData.tanggalMulai, this.currentReportData.tanggalAkhir);
+          Utils.showNotification('Transaksi berhasil dihapus', 'success');
+        })
+        .catch((error) => {
+          console.error('Error deleting transaction:', error);
+          Utils.showNotification('Gagal menghapus transaksi', 'error');
+        });
+    }
+  }
+
+
+
 
   static getDateDifferenceText(startDate, endDate) {
     try {
@@ -412,7 +512,7 @@ class LaporanManager {
       const end = new Date(endDate);
       const diffTime = Math.abs(end - start);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      
+
       if (diffDays === 1) {
         return '1 Hari';
       } else {
@@ -443,21 +543,21 @@ class LaporanManager {
   // PERBAIKAN: Gunakan timezone Indonesia untuk format date range dengan error handling
   static formatDateRange(startDate, endDate) {
     try {
-      const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
         day: 'numeric',
         timeZone: 'Asia/Jakarta'
       };
-      
+
       const start = new Date(startDate + 'T00:00:00+07:00').toLocaleDateString('id-ID', options);
       const end = new Date(endDate + 'T00:00:00+07:00').toLocaleDateString('id-ID', options);
-      
+
       if (startDate === endDate) {
         return start;
       }
-      
+
       return `${start} - ${end}`;
     } catch (error) {
       console.error('Error formatting date range:', error);
@@ -465,175 +565,187 @@ class LaporanManager {
     }
   }
 
-  static printReport() {
-    try {
-      const reportContent = document.getElementById('reportResult');
-      if (!reportContent) {
-        Utils.showNotification('Tidak ada laporan untuk dicetak', 'warning');
-        return;
-      }
 
-      const printWindow = window.open('', '_blank');
-      
-      const printHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Detail Transaksi - Warkop Babol</title>
-          <style>
-            body { 
-              font-family: Arial, sans-serif; 
-              margin: 20px; 
-              font-size: 12px;
-            }
-            .report-header { 
-              text-align: center; 
-              margin-bottom: 30px; 
-              border-bottom: 2px solid #FF69B4; 
-              padding-bottom: 20px; 
-            }
-            .report-header h3 {
-              color: #FF69B4;
-              margin-bottom: 10px;
-            }
-            .report-table { 
-              width: 100%; 
-              border-collapse: collapse; 
-              margin-bottom: 30px; 
-              font-size: 11px;
-            }
-            .report-table th, .report-table td { 
-              padding: 8px; 
-              text-align: left; 
-              border: 1px solid #ddd; 
-              vertical-align: top;
-            }
-            .report-table th { 
-              background-color: #FF69B4; 
-              color: white;
-              font-weight: bold; 
-            }
-            .total-row { 
-              background-color: #FFB6C1; 
-              font-weight: bold; 
-            }
-            .text-center { text-align: center; }
-            .text-right { text-align: right; }
-            .transaction-items {
-              line-height: 1.4;
-              word-wrap: break-word;
-            }
-            .badge {
-              background: #FF69B4;
-              color: white;
-              padding: 2px 6px;
-              border-radius: 10px;
-              font-size: 10px;
-            }
-            .summary-stats { 
-              display: grid; 
-              grid-template-columns: repeat(2, 1fr); 
-              gap: 15px; 
-              margin-top: 20px; 
-            }
-            .summary-item { 
-              text-align: center; 
-              padding: 15px; 
-              border: 1px solid #ddd; 
-              border-radius: 5px;
-            }
-            .value { 
-              font-size: 14px; 
-              font-weight: bold; 
-              color: #FF69B4; 
-              margin-top: 5px;
-            }
-            .period-text {
-              font-size: 12px !important;
-            }
-            .report-actions { display: none; }
-            
-            @media print { 
-              body { margin: 0; font-size: 10px; }
-              .report-table { font-size: 9px; }
-              .report-table th, .report-table td { padding: 4px; }
-            }
-          </style>
-        </head>
-        <body>
-          ${reportContent.innerHTML}
-          <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #666;">
-            <p>🌸 Warkop Babol - Dicetak pada ${new Date().toLocaleDateString('id-ID', {timeZone: 'Asia/Jakarta'})} ${new Date().toLocaleTimeString('id-ID', {timeZone: 'Asia/Jakarta'})} 🌸</p>
-          </div>
-        </body>
-        </html>
-      `;
-      
-      printWindow.document.write(printHTML);
-      printWindow.document.close();
-      printWindow.print();
-
-    } catch (error) {
-      console.error('Error printing report:', error);
-      Utils.showNotification('Gagal mencetak laporan', 'error');
+static exportCSV() {
+  try {
+    if (!this.currentReportData || !this.currentReportData.data) {
+      Utils.showNotification('Tidak ada data untuk diekspor', 'warning');
+      return;
     }
-  }
 
-  static exportCSV() {
-    try {
-      if (!this.currentReportData || !this.currentReportData.data) {
-        Utils.showNotification('Tidak ada data untuk diekspor', 'warning');
-        return;
+    const data = this.currentReportData.data;
+
+    // Header CSV
+    let csv = 'No,Tanggal & Waktu,Item yang Dibeli,Total Item,Total Harga,Pembayaran\n';  // Added 'Pembayaran' column
+
+    // Data rows with validation
+    data.forEach((transaksi, index) => {
+      try {
+        const items = transaksi.items || [];
+        const itemsList = items.map(item => {
+          const namaMenu = item.nama_menu || item.nama || 'Item tidak dikenal';
+          const jumlah = item.jumlah || 0;
+          return `${namaMenu} (${jumlah}x)`;
+        }).join('; ');
+
+        const totalItems = items.reduce((sum, item) => sum + (item.jumlah || 0), 0);
+        const totalHarga = transaksi.total_harga || 0;
+        const tanggal = transaksi.tanggal || 'Tanggal tidak tersedia';
+        const tipePembayaran = transaksi.tipe_pembayaran || 'Tunai'; // Default to 'Tunai' if not available
+
+        csv += `"${index + 1}","${tanggal}","${itemsList}","${totalItems}","${Utils.formatRupiah(totalHarga)}","${tipePembayaran}"\n`;  // Added tipePembayaran column
+      } catch (itemError) {
+        console.error('Error processing CSV item:', itemError);
+        csv += `"${index + 1}","Error","Error","0","Rp 0","Error"\n`;  // Added 'Error' for the new column
       }
+    });
 
-      const data = this.currentReportData.data;
-      
-      // Header CSV
-      let csv = 'No,Tanggal & Waktu,Item yang Dibeli,Total Item,Total Harga\n';
-      
-      // Data rows dengan validasi
-      data.forEach((transaksi, index) => {
-        try {
-          const items = transaksi.items || [];
-          const itemsList = items.map(item => {
-            const namaMenu = item.nama_menu || item.nama || 'Item tidak dikenal';
-            const jumlah = item.jumlah || 0;
-            return `${namaMenu} (${jumlah}x)`;
-          }).join('; ');
-          
-          const totalItems = items.reduce((sum, item) => sum + (item.jumlah || 0), 0);
-          const totalHarga = transaksi.total_harga || 0;
-          const tanggal = transaksi.tanggal || 'Tanggal tidak tersedia';
-          
-          csv += `"${index + 1}","${tanggal}","${itemsList}","${totalItems}","${Utils.formatRupiah(totalHarga)}"\n`;
-        } catch (itemError) {
-          console.error('Error processing CSV item:', itemError);
-          csv += `"${index + 1}","Error","Error","0","Rp 0"\n`;
-        }
-      });
-      
-      // Total row
-      csv += `"","TOTAL","","${this.currentReportData.totalTransaksi} Transaksi","${Utils.formatRupiah(this.currentReportData.totalKeseluruhan)}"\n`;
+    // Total row
+    csv += `"","TOTAL","","${this.currentReportData.totalTransaksi} Transaksi","${Utils.formatRupiah(this.currentReportData.totalKeseluruhan)}",""\n`;  // Left 'Pembayaran' empty for total row
 
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      
-      link.setAttribute('href', url);
-      link.setAttribute('download', `detail-transaksi-warkop-babol-${this.currentReportData.tanggalMulai}-to-${this.currentReportData.tanggalAkhir}.csv`);
-      link.style.visibility = 'hidden';
-      
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      Utils.showNotification('Detail transaksi berhasil diekspor! 📊', 'success');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
 
-    } catch (error) {
-      console.error('Error exporting CSV:', error);
-      Utils.showNotification('Gagal mengekspor data', 'error');
-    }
+    link.setAttribute('href', url);
+    link.setAttribute('download', `detail-transaksi-warkop-babol-${this.currentReportData.tanggalMulai}-to-${this.currentReportData.tanggalAkhir}.csv`);
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    Utils.showNotification('Detail transaksi berhasil diekspor! 📊', 'success');
+
+  } catch (error) {
+    console.error('Error exporting CSV:', error);
+    Utils.showNotification('Gagal mengekspor data', 'error');
   }
+}
+
+
+static printReport() {
+  try {
+    const reportContent = document.getElementById('reportResult');
+    if (!reportContent) {
+      Utils.showNotification('Tidak ada laporan untuk dicetak', 'warning');
+      return;
+    }
+
+    const printWindow = window.open('', '_blank');
+
+    const printHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Detail Transaksi - Warkop Babol</title>
+        <style>
+          body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            font-size: 12px;
+          }
+          .report-header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            border-bottom: 2px solid #FF69B4; 
+            padding-bottom: 20px; 
+          }
+          .report-header h3 {
+            color: #FF69B4;
+            margin-bottom: 10px;
+          }
+          .report-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 30px; 
+            font-size: 11px;
+          }
+          .report-table th, .report-table td { 
+            padding: 8px; 
+            text-align: left; 
+            border: 1px solid #ddd; 
+            vertical-align: top;
+          }
+          .report-table th { 
+            background-color: #FF69B4; 
+            color: white;
+            font-weight: bold; 
+          }
+          .total-row { 
+            background-color: #FFB6C1; 
+            font-weight: bold; 
+          }
+          .text-center { text-align: center; }
+          .text-right { text-align: right; }
+          .transaction-items {
+            line-height: 1.4;
+            word-wrap: break-word;
+          }
+          .badge {
+            background: #FF69B4;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+          }
+          .summary-stats { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+            margin-top: 20px; 
+          }
+          .summary-item { 
+            text-align: center; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px;
+          }
+          .value { 
+            font-size: 14px; 
+            font-weight: bold; 
+            color: #FF69B4; 
+            margin-top: 5px;
+          }
+          .period-text {
+            font-size: 12px !important;
+          }
+          .report-actions { display: none; } /* Hide action buttons in print view */
+          
+          /* Hiding the Aksi column in the print view */
+          @media print { 
+            body { margin: 0; font-size: 10px; }
+            .report-table { font-size: 9px; }
+            .report-table th, .report-table td { padding: 4px; }
+            .report-table td:last-child, .report-table th:last-child {
+              display: none; /* Hides the 'Aksi' column */
+            }
+          }
+        </style>
+      </head>
+      <body>
+        ${reportContent.innerHTML}
+        <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #666;">
+          <p>🌸 Warkop Babol - Dicetak pada ${new Date().toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' })} ${new Date().toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta' })} 🌸</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(printHTML);
+    printWindow.document.close();
+    printWindow.print();
+
+  } catch (error) {
+    console.error('Error printing report:', error);
+    Utils.showNotification('Gagal mencetak laporan', 'error');
+  }
+}
+
+
+
+
+ 
 }
 
 // Export for use in other files

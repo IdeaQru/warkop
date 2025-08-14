@@ -7,17 +7,17 @@ class Kasir {
   static async load() {
     try {
       await this.loadMenuData();
-      
+
       if (!this.eventListenersInitialized) {
         this.initEventListeners();
         this.initSearchBox(); // Tambahan untuk inisialisasi search box
         this.eventListenersInitialized = true;
       }
-      
+
       this.displayMenuByCategory();
       this.updateOrderDisplay();
       this.fixCardTextTruncation();
-      
+
     } catch (error) {
       console.error('Error loading kasir:', error);
       Utils.showNotification('Gagal memuat data kasir', 'error');
@@ -111,7 +111,7 @@ class Kasir {
   static getActiveContainerSelector() {
     const containerMap = {
       main_menu: '#kasirMainMenu',
-      drinks: '#kasirDrinks', 
+      drinks: '#kasirDrinks',
       additional: '#kasirAdditional'
     };
     return containerMap[this.currentCategory];
@@ -126,7 +126,7 @@ class Kasir {
     if (!container) return;
 
     const visibleCards = container.querySelectorAll('.kasir-menu-item[style*="block"], .kasir-menu-item:not([style*="none"])');
-    
+
     // Hapus pesan pencarian yang sudah ada
     const existingMessage = container.querySelector('.search-result-message');
     if (existingMessage) {
@@ -169,7 +169,7 @@ class Kasir {
     document.querySelectorAll('.category-tab').forEach(tab => {
       tab.classList.remove('active');
     });
-    
+
     if (clickedTab) {
       clickedTab.classList.add('active');
     } else {
@@ -195,7 +195,7 @@ class Kasir {
 
     // Update current category dan filter ulang
     this.currentCategory = category;
-    
+
     // Reset search box saat pindah kategori
     const searchInput = document.getElementById('menuSearchInput');
     if (searchInput && this.searchTerm) {
@@ -235,7 +235,7 @@ class Kasir {
   static getEmptyMenuHTML(category) {
     const titles = {
       main_menu: 'Main Menu',
-      drinks: 'Drinks', 
+      drinks: 'Drinks',
       additional: 'Additional'
     };
 
@@ -252,7 +252,7 @@ class Kasir {
   static getKasirMenuItemHTML(menu) {
     const isOutOfStock = !menu.isInfinite && menu.stok <= 0;
     const stockClass = isOutOfStock ? 'out-of-stock' : '';
-    
+
     let stockBadge;
     if (menu.isInfinite) {
       stockBadge = `<span class="stock-badge-kasir infinite">∞</span>`;
@@ -261,8 +261,8 @@ class Kasir {
     } else {
       stockBadge = `<span class="stock-badge-kasir available">${menu.stok}</span>`;
     }
-    
-    const clickHandler = isOutOfStock 
+
+    const clickHandler = isOutOfStock
       ? `onclick="Utils.showNotification('Stok menu ${menu.nama} sudah habis!', 'warning')"`
       : `onclick="Kasir.addToOrder('${menu._id}', '${menu.nama.replace(/'/g, "\\'")}', ${menu.harga}, ${menu.stok}, ${menu.isInfinite})"`;
 
@@ -312,7 +312,7 @@ class Kasir {
 
   static removeFromOrder(index) {
     const item = WarkopBabol.currentOrder[index];
-    
+
     if (item.jumlah > 1) {
       item.jumlah -= 1;
       item.subtotal = item.harga * item.jumlah;
@@ -336,7 +336,7 @@ class Kasir {
         Utils.showNotification(`Stok ${item.nama} tidak mencukupi! Sisa: ${item.stokTersedia}`, 'warning');
         return;
       }
-      
+
       item.jumlah = newQuantity;
       item.subtotal = item.harga * item.jumlah;
     }
@@ -377,7 +377,7 @@ class Kasir {
   // PERBAIKAN: Tampilkan informasi stok di order item
   static getOrderItemHTML(item, index) {
     const stockInfo = item.isInfinite ? '∞' : `(Sisa: ${item.stokTersedia})`;
-    
+
     return `
       <div class="order-item">
         <div class="order-item-info">
@@ -435,29 +435,31 @@ class Kasir {
         jumlah: item.jumlah
       }));
 
+      const paymentType = document.querySelector('input[name="paymentType"]:checked').value || 'tunai'; // Get payment type
+
       console.log('🛒 Processing order items:', items);
 
       const result = await Utils.apiCall('/transaksi', {
         method: 'POST',
-        body: JSON.stringify({ items })
+        body: JSON.stringify({ items, tipe_pembayaran: paymentType })
       });
 
       console.log('✅ Transaction successful:', result);
 
-      // Show receipt dengan data transaksi yang baru
+      // Show receipt with the new transaction data
       this.showReceipt(result.data);
-      
-      // Clear order setelah berhasil
+
+      // Clear order after successful transaction
       WarkopBabol.currentOrder = [];
       this.updateOrderDisplay();
 
-      // PENTING: Reload menu data untuk mendapatkan stok terbaru
+      // Reload menu data to get the latest stock levels
       await this.loadMenuData();
       this.displayMenuByCategory();
 
       Utils.showNotification('Transaksi berhasil diproses! Stok telah diperbarui 🎉', 'success');
 
-      // Update dashboard
+      // Update dashboard if active tab is 'dashboard'
       if (WarkopBabol.currentTab === 'dashboard') {
         Dashboard.load();
       }
@@ -474,10 +476,11 @@ class Kasir {
     }
   }
 
+
   static showReceipt(transactionData) {
     const modal = document.getElementById('receiptModal');
     const content = document.getElementById('receiptContent');
-    
+
     if (!modal || !content) return;
 
     const now = Utils.getIndonesiaDate(); // Gunakan waktu Indonesia
@@ -489,27 +492,27 @@ class Kasir {
         <div class="receipt-header">
           <h3>🌸 WARKOP BABOL</h3>
           <p>Struk Pembelian</p>
-          <small>${Utils.formatDate(now, { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}</small>
+          <small>${Utils.formatDate(now, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })}</small>
         </div>
         
         <div class="receipt-items">
           ${WarkopBabol.currentOrder.map(item => {
-            total += item.subtotal;
-            return `
+      total += item.subtotal;
+      return `
               <div class="receipt-item">
                 <span>${item.nama}</span>
                 <span>${item.jumlah}x</span>
                 <span>${Utils.formatRupiah(item.subtotal)}</span>
               </div>
             `;
-          }).join('')}
+    }).join('')}
         </div>
         
         <div class="receipt-total">
@@ -534,7 +537,7 @@ class Kasir {
     // Close receipt modal events
     const closeReceiptBtn = document.getElementById('closeReceiptBtn');
     const closeReceiptModal = document.getElementById('closeReceiptModal');
-    
+
     if (closeReceiptBtn) {
       closeReceiptBtn.onclick = () => ModalManager.hide('receiptModal');
     }
@@ -547,7 +550,7 @@ class Kasir {
   static fixCardTextTruncation() {
     setTimeout(() => {
       const cardTitles = document.querySelectorAll('.kasir-menu-item h5');
-      
+
       cardTitles.forEach(title => {
         const lineHeight = parseFloat(getComputedStyle(title).lineHeight);
         const maxHeight = 2.4 * lineHeight;
@@ -573,7 +576,7 @@ class Kasir {
     this.currentCategory = 'main_menu';
     this.searchTerm = '';
     WarkopBabol.currentOrder = [];
-    
+
     // Reset search input
     const searchInput = document.getElementById('menuSearchInput');
     if (searchInput) {

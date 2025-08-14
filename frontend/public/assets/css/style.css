@@ -1527,6 +1527,117 @@ body {
     align-self: flex-end;
   }
 }
+/* ===== TABEL PESANAN ===== */
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  background-color: var(--off-white);
+  border-radius: 12px;
+  box-shadow: 0 5px 20px var(--shadow-light);
+}
+
+.order-table th,
+.order-table td {
+  padding: 18px 25px;
+  text-align: left;
+  border-bottom: 1px solid var(--light-gray);
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+.order-table th {
+  background: var(--light-pink);
+  font-weight: 600;
+  color: var(--white);
+}
+
+.order-table tbody tr:hover {
+  background: var(--light-gray);
+}
+
+.order-table .order-status {
+  font-weight: 500;
+  color: var(--primary-pink);
+  text-align: center;
+}
+
+/* Baris Total */
+.order-table .total-row {
+  background: linear-gradient(135deg, var(--soft-pink) 0%, var(--pale-pink) 100%);
+  font-weight: 700;
+  color: var(--primary-pink);
+}
+
+/* ===== KONTROL PILIHAN PEMBAYARAN ===== */
+.payment-options {
+  margin-top: 30px;
+  background: var(--off-white);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 5px 20px var(--shadow-light);
+}
+
+.payment-options h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+}
+
+.payment-options label {
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--dark-gray);
+  margin-right: 15px;
+}
+
+.payment-options input[type="radio"] {
+  accent-color: var(--primary-pink);
+  margin-right: 8px;
+}
+
+.payment-options .payment-method {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+}
+
+.payment-options .payment-method input[type="radio"]:checked + label {
+  font-weight: 600;
+  color: var(--primary-pink);
+}
+
+/* Menonaktifkan tombol jika belum memilih metode pembayaran */
+.payment-options .btn-large:disabled {
+  background: var(--medium-gray);
+  color: var(--dark-gray);
+  cursor: not-allowed;
+}
+
+/* ===== BUTTON CLEAR ORDER ===== */
+#clearOrderBtn {
+  background: linear-gradient(135deg, var(--error-red) 0%, #F44336 100%);
+  color: var(--white);
+  padding: 12px 25px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-top: 20px;
+  box-shadow: 0 8px 25px rgba(244, 67, 54, 0.2);
+  transition: all 0.3s ease;
+}
+
+#clearOrderBtn:hover {
+  background: linear-gradient(135deg, #D32F2F 0%, #E57373 100%);
+}
+
+#clearOrderBtn:disabled {
+  background: var(--medium-gray);
+  color: var(--dark-gray);
+  cursor: not-allowed;
+  box-shadow: none;
+}
 
 .menu-selection-panel,
 .order-panel {

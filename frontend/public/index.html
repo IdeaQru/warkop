@@ -128,7 +128,7 @@
                             <option value="drinks">Drinks</option>
                             <option value="additional">Additional</option>
                         </select>
-                  
+
                     </div>
                 </div>
                 <!-- Add Menu Form Modal -->
@@ -225,11 +225,13 @@
             </section>
 
             <!-- Kasir Tab -->
+            <!-- Kasir Tab -->
             <section id="kasir" class="tab-panel">
                 <div class="page-header">
                     <h2><i class="fas fa-cash-register"></i> Point of Sale</h2>
                     <p>Sistem kasir Warkop Babol</p>
                 </div>
+
                 <!-- Search Box -->
                 <div class="kasir-search-box">
                     <i class="fas fa-search"></i>
@@ -237,6 +239,7 @@
                 </div>
 
                 <div class="kasir-container">
+                    <!-- Menu Section -->
                     <div class="menu-selection-panel">
                         <div class="panel-header">
                             <h3><i class="fas fa-coffee"></i> Menu Tersedia</h3>
@@ -257,18 +260,13 @@
 
                         <!-- Menu Items -->
                         <div class="menu-items-container">
-                            <div id="kasirMainMenu" class="menu-category-grid active">
-                                <!-- Main menu items akan dimuat di sini -->
-                            </div>
-                            <div id="kasirDrinks" class="menu-category-grid">
-                                <!-- Drinks items akan dimuat di sini -->
-                            </div>
-                            <div id="kasirAdditional" class="menu-category-grid">
-                                <!-- Additional items akan dimuat di sini -->
-                            </div>
+                            <div id="kasirMainMenu" class="menu-category-grid active"></div>
+                            <div id="kasirDrinks" class="menu-category-grid"></div>
+                            <div id="kasirAdditional" class="menu-category-grid"></div>
                         </div>
                     </div>
 
+                    <!-- Order Panel -->
                     <div class="order-panel">
                         <div class="panel-header">
                             <h3><i class="fas fa-shopping-cart"></i> Pesanan</h3>
@@ -290,13 +288,28 @@
                                 <h4>Total Pembayaran</h4>
                                 <p class="total-amount" id="totalAmount">Rp 0</p>
                             </div>
+                            <!-- Pilihan Pembayaran (Tunai / Non-Tunai) -->
+                            <div class="payment-options">
+                                <h4>Metode Pembayaran</h4>
+                                <label>
+                                    <input type="radio" name="paymentType" value="tunai" checked>
+                                    Tunai
+                                </label>
+                                <label>
+                                    <input type="radio" name="paymentType" value="non_tunai">
+                                    Non-Tunai
+                                </label>
+                            </div>
                             <button class="btn btn-success btn-large" id="processOrderBtn" disabled>
                                 <i class="fas fa-check-circle"></i> Proses Pesanan
                             </button>
                         </div>
                     </div>
                 </div>
+
+
             </section>
+
 
             <!-- Laporan Tab -->
             <section id="laporan" class="tab-panel">
@@ -330,7 +343,10 @@
                     <!-- Hasil laporan akan ditampilkan di sini -->
                 </div>
             </section>
+          
         </main>
+        <!-- Edit Transaction Modal -->
+
 
         <!-- Receipt Modal -->
         <div id="receiptModal" class="modal-overlay">
