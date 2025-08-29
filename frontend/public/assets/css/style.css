@@ -345,7 +345,86 @@ body {
   border: 2px solid var(--light-pink);
   color: var(--primary-pink);
 }
+.payment-type-filter {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
 
+.payment-filter-options {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+  background: rgba(255, 105, 180, 0.1);
+}
+
+.payment-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.payment-summary-item {
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+}
+
+.cash-summary {
+  background: linear-gradient(135deg, #f0f8f0, #e8f5e8);
+  border-color: #28a745;
+}
+
+.noncash-summary {
+  background: linear-gradient(135deg, #f0f0f8, #e8e8f5);
+  border-color: #007bff;
+}
+
+.badge-cash {
+  background: #28a745;
+  color: white;
+}
+
+.badge-noncash {
+  background: #007bff;
+  color: white;
+}
+
+.row-cash {
+  background-color: rgba(40, 167, 69, 0.1);
+}
+
+.row-noncash {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.stat-value.cash {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.stat-value.noncash {
+  color: #007bff;
+  font-weight: bold;
+  font-size: 1.2em;
+}
 .btn-outline:hover {
   background: var(--light-pink);
   color: var(--white);
@@ -1147,20 +1226,12 @@ body {
 }
 
 /* ===== KASIR LAYOUT ===== */
-/* ===== PERBAIKAN KASIR CONTAINER ===== */
 .kasir-container {
   display: grid;
-  grid-template-columns: 1fr 380px; /* Sedikit lebih kecil dari 400px */
-  gap: 20px;
-  height: auto; /* Ubah dari 700px ke auto */
-  min-height: 600px;
-  max-height: calc(100vh - 200px);
-  padding: 0;
-  box-sizing: border-box;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 30px;
+  height: 700px;
 }
-
-
-
 /* ================== KARTU MENU DI HALAMAN KASIR ================= */
 
 /* ===== PERBAIKAN KHUSUS CONTAINER MENU KASIR ===== */
@@ -1306,250 +1377,28 @@ body {
   justify-self: center;
 }
 /* === KASIR SEARCH BOX =============================================== */
-/* ===== SEARCH BOX KASIR RESPONSIVE ===== */
-.kasir-search-container {
-  padding: 12px 15px;
-  background: var(--white);
-  border-bottom: 1px solid var(--light-gray);
-}
-
 .kasir-search-box {
-  position: relative;
-  display: flex;
-  align-items: center;
+    margin: 15px 0 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .kasir-search-box i {
-  position: absolute;
-  left: 10px;
-  color: #bbb;
-  font-size: 0.8rem;
-  z-index: 2;
+    position: absolute;
+    left: 14px;
+    color: #bbb;
+    font-size: 0.9rem;
 }
 
 .kasir-search-box input {
-  width: 100%;
-  padding: 8px 12px 8px 30px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-family: inherit;
-  transition: all 0.25s;
-  background: var(--off-white);
-}
-
-.kasir-search-box input:focus {
-  border-color: var(--primary-pink);
-  box-shadow: 0 0 0 2px rgba(255, 105, 180, 0.15);
-  outline: none;
-  background: var(--white);
-}
-
-.kasir-search-box input::placeholder {
-  font-size: 0.75rem;
-  color: #999;
-}
-/* ===== TABLET RESPONSIVE (768px - 1024px) ===== */
-@media (max-width: 1024px) and (min-width: 768px) {
-  .kasir-container {
-    grid-template-columns: 1fr 320px; /* Lebih kecil untuk tablet */
-    gap: 15px;
-    max-height: calc(100vh - 160px);
-  }
-  
-  .menu-category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 10px;
-    padding: 12px;
-  }
-  
-  .kasir-menu-item {
-    min-height: 80px;
-    max-height: 100px;
-    padding: 10px;
-  }
-  
-  .kasir-menu-item h5 {
-    font-size: 0.7rem;
-    max-height: 2em;
-    padding-right: 12px;
-  }
-  
-  .kasir-menu-item .price {
-    font-size: 0.8rem;
-  }
-  
-  .stock-badge-kasir {
-    font-size: 0.55rem;
-    padding: 1px 3px;
-  }
-  
-  /* Category tabs untuk tablet */
-  .category-tabs {
-    padding: 10px;
-    gap: 8px;
-  }
-  
-  .category-tab {
-    padding: 8px 12px;
-    font-size: 0.8rem;
-  }
-  
-  /* Order panel untuk tablet */
-  .order-panel {
-    min-width: 300px;
-  }
-  
-  .order-items-container {
-    padding: 15px;
-  }
-  
-  .order-item {
-    padding: 12px;
-    margin-bottom: 10px;
-  }
-  
-  .quantity-btn {
-    width: 26px;
-    height: 26px;
-  }
-}
-
-/* ===== LANDSCAPE TABLET ===== */
-@media (max-width: 1024px) and (min-width: 768px) and (orientation: landscape) {
-  .kasir-container {
-    grid-template-columns: 1fr 280px; /* Lebih compact untuk landscape */
-    max-height: calc(100vh - 120px);
-  }
-  
-  .menu-category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  }
-  
-  .kasir-menu-item {
-    min-height: 75px;
-    max-height: 90px;
-  }
-}
-/* ===== MOBILE RESPONSIVE (< 768px) ===== */
-@media (max-width: 767px) {
-  .kasir-container {
-    display: block; /* Ubah dari grid ke block */
-    height: auto;
-    position: relative;
-    padding-bottom: 120px; /* Ruang untuk order panel */
-  }
-  
-  .menu-selection-panel {
     width: 100%;
-    margin-bottom: 0;
-  }
-  
-  .order-panel {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-height: 60vh;
-    border-radius: 20px 20px 0 0;
-    z-index: 1000;
-    transform: translateY(calc(100% - 80px)); /* Tampilkan hanya header */
-    transition: transform 0.3s ease;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-  }
-  
-  .order-panel.expanded {
-    transform: translateY(0);
-  }
-  
-  /* Toggle button untuk mobile */
-  .order-panel::before {
-    content: '🛒 Pesanan';
-    position: absolute;
-    top: -50px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--primary-pink);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 15px 15px 0 0;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
-    z-index: 1001;
-  }
-  
-  /* Menu grid untuk mobile */
-  .menu-category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-    padding: 15px;
-    padding-bottom: 30px;
-  }
-  
-  .kasir-menu-item {
-    min-height: 100px;
-    max-height: 120px;
-  }
-  
-  .kasir-menu-item h5 {
-    font-size: 0.8rem;
-    padding-right: 18px;
-  }
-  
-  /* Category tabs untuk mobile */
-  .category-tabs {
-    flex-direction: row;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 12px;
-    gap: 8px;
-  }
-  
-  .category-tabs::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .category-tab {
-    min-width: 90px;
-    padding: 8px 12px;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
+    padding: 10px 15px 10px 38px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    transition: all 0.25s;
+    font-family: inherit;
 }
-
-/* ===== SMALL MOBILE (< 480px) ===== */
-@media (max-width: 479px) {
-  .menu-category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 10px;
-  }
-  
-  .kasir-menu-item {
-    min-height: 85px;
-    max-height: 100px;
-    padding: 8px;
-  }
-  
-  .kasir-menu-item h5 {
-    font-size: 0.7rem;
-    max-height: 1.8em; /* Lebih ketat */
-  }
-  
-  .kasir-menu-item .price {
-    font-size: 0.75rem;
-  }
-  
-  .category-tab {
-    min-width: 80px;
-    padding: 6px 10px;
-    font-size: 0.7rem;
-  }
-}
-
 
 .kasir-search-box input:focus {
     border-color: #ff69b4;
@@ -1861,155 +1710,6 @@ body {
 #clearOrderBtn:hover {
   background: linear-gradient(135deg, #D32F2F 0%, #E57373 100%);
 }
-.payment-type-filter {
-  margin: 20px 0;
-  padding: 20px;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-}
-
-.payment-type-filter h4 {
-  margin-bottom: 15px;
-  color: #FF69B4;
-  font-weight: bold;
-}
-
-.payment-filter-options {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.payment-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  padding: 12px 18px;
-  border-radius: 25px;
-  transition: all 0.3s ease;
-  background: white;
-  border: 2px solid transparent;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.payment-option:hover {
-  background: rgba(255, 105, 180, 0.1);
-  border-color: #FF69B4;
-  transform: translateY(-2px);
-}
-
-.payment-option input[type="radio"] {
-  margin: 0;
-}
-
-.radio-custom {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #ddd;
-  border-radius: 50%;
-  position: relative;
-}
-
-.payment-option input[type="radio"]:checked + .radio-custom {
-  border-color: #FF69B4;
-  background: #FF69B4;
-}
-
-.payment-option input[type="radio"]:checked + .radio-custom::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  background: white;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.payment-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  margin: 25px 0;
-}
-
-.payment-summary-item {
-  padding: 25px;
-  border-radius: 12px;
-  border: 2px solid transparent;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.cash-summary {
-  background: linear-gradient(135deg, #f0f8f0, #e8f5e8);
-  border-color: #28a745;
-}
-
-.noncash-summary {
-  background: linear-gradient(135deg, #f0f0f8, #e8e8f5);
-  border-color: #007bff;
-}
-
-.payment-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.stat-item {
-  display: flex;
-  justify-content: between;
-  align-items: center;
-}
-
-.stat-label {
-  font-weight: 500;
-  color: #666;
-}
-
-.stat-value {
-  font-weight: bold;
-  font-size: 1.1em;
-}
-
-.stat-value.cash {
-  color: #28a745;
-}
-
-.stat-value.noncash {
-  color: #007bff;
-}
-
-.badge-cash {
-  background: linear-gradient(135deg, #28a745, #34ce57);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.badge-noncash {
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.row-cash {
-  background-color: rgba(40, 167, 69, 0.05);
-  border-left: 4px solid #28a745;
-}
-
-.row-noncash {
-  background-color: rgba(0, 123, 255, 0.05);
-  border-left: 4px solid #007bff;
-}
 
 #clearOrderBtn:disabled {
   background: var(--medium-gray);
@@ -2018,7 +1718,6 @@ body {
   box-shadow: none;
 }
 
-/* Panel Menu dan Order - Perbaikan */
 .menu-selection-panel,
 .order-panel {
   background: var(--off-white);
@@ -2027,8 +1726,6 @@ body {
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 5px 20px var(--shadow-light);
-  min-height: 0; /* Penting untuk flexbox */
-  height: 100%;
 }
 
 .panel-header {
@@ -2088,118 +1785,68 @@ body {
   overflow: hidden;
 }
 
-/* ===== PERBAIKAN GRID MENU KASIR ===== */
 .menu-category-grid {
   display: none;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Lebih kecil */
-  gap: 12px;
-  padding: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+  padding: 20px;
   height: 100%;
   overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
-  min-width: 0;
 }
 
 .menu-category-grid.active {
   display: grid;
 }
 
-/* Perbaikan Card Menu Kasir */
+/* Kasir Menu Items - Lebih Compact */
 .kasir-menu-item {
   background: var(--white);
-  border-radius: 10px;
-  padding: 12px;
+  border-radius: 12px;
+  padding: 15px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid transparent;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-  
-  /* PERBAIKAN UTAMA: Gunakan grid layout yang lebih reliable */
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-areas: 
-    "badge"
-    "title"
-    "price";
-  align-items: center;
-  justify-items: center;
-  
-  /* Dimensi yang lebih fleksibel */
-  min-height: 90px;
-  max-height: 110px;
-  min-width: 0;
-  overflow: hidden;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100px;
+  max-height: 120px;
 }
 
 .kasir-menu-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: var(--light-pink);
-  box-shadow: 0 6px 18px var(--shadow-light);
+  box-shadow: 0 8px 20px var(--shadow-light);
 }
 
-/* Perbaikan Teks Menu Title */
 .kasir-menu-item h5 {
-  font-size: 0.75rem; /* Lebih kecil */
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-dark);
-  line-height: 1.1;
-  
-  /* Grid area */
-  grid-area: title;
-  
-  /* Perbaikan overflow text */
+  margin-bottom: 8px;
+  line-height: 1.2;
   overflow: hidden;
-  word-break: break-word;
-  hyphens: auto;
-  max-height: 2.2em; /* Batasi tinggi */
-  
-  /* Full width dalam grid */
-  width: 100%;
-  margin: 0;
-  padding: 0 15px 0 0; /* Ruang untuk badge */
-  
-  /* Alignment */
-  align-self: center;
-  justify-self: center;
-  text-align: center;
-  
-  /* Fallback jika webkit tidak didukung */
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
-/* Harga */
 .kasir-menu-item .price {
-  font-size: 0.85rem; /* Lebih kecil */
+  font-size: 1rem;
   font-weight: 700;
   color: var(--primary-pink);
-  grid-area: price;
-  width: 100%;
-  margin: 0;
-  align-self: end;
-  justify-self: center;
+  margin-top: auto;
 }
 
-/* Stock Badge */
-.stock-badge-kasir {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background: var(--success-green);
-  color: var(--white);
-  font-size: 0.6rem;
-  font-weight: 600;
-  padding: 1px 4px;
-  border-radius: 6px;
-  z-index: 2;
-  grid-area: badge;
+/* Order Panel */
+.order-items-container {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
 }
-
 
 .empty-order {
   text-align: center;
@@ -4098,198 +3745,4 @@ body {
 
 .btn-danger:hover {
   background: linear-gradient(135deg, #C82333 0%, #DC3545 100%);
-}
-
-/* ===== LANDSCAPE TABLET ===== */
-@media (max-width: 1024px) and (min-width: 768px) and (orientation: landscape) {
-  .kasir-container {
-    grid-template-columns: 1fr 280px;
-    max-height: calc(100vh - 120px);
-  }
-  
-  .menu-category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
-  }
-  
-  .kasir-menu-item {
-    min-height: 80px;
-    max-height: 95px;
-    padding: 8px;
-  }
-  
-  .kasir-menu-item h5 {
-    font-size: 0.7rem;
-  }
-  
-  .kasir-menu-item .price {
-    font-size: 0.8rem;
-  }
-}
-
-/* ===== MOBILE RESPONSIVE (< 768px) ===== */
-@media (max-width: 767px) {
-  .kasir-container {
-    display: block;
-    height: auto;
-    position: relative;
-    padding-bottom: 100px;
-  }
-  
-  .menu-selection-panel {
-    width: 100%;
-    margin-bottom: 0;
-  }
-  
-  .order-panel {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-height: 60vh;
-    border-radius: 20px 20px 0 0;
-    z-index: 1000;
-    transform: translateY(calc(100% - 70px));
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
-  }
-  
-  .order-panel.expanded {
-    transform: translateY(0);
-  }
-  
-  .order-panel::before {
-    content: '🛒 Pesanan';
-    position: absolute;
-    top: -45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--primary-pink);
-    color: white;
-    padding: 8px 20px;
-    border-radius: 15px 15px 0 0;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
-    z-index: 1001;
-    white-space: nowrap;
-  }
-  
-  .panel-header {
-    cursor: pointer;
-  }
-  
-  .category-tabs {
-    overflow-x: auto;
-    justify-content: flex-start;
-    padding: 12px;
-  }
-  
-  .category-tab {
-    min-width: 85px;
-    flex-shrink: 0;
-    padding: 8px 12px;
-    font-size: 0.75rem;
-  }
-  
-  .menu-category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-    gap: 12px;
-    padding: 15px;
-    padding-bottom: 30px;
-  }
-  
-  .kasir-menu-item {
-    min-height: 100px;
-    max-height: 120px;
-    padding: 12px;
-  }
-  
-  .kasir-menu-item h5 {
-    font-size: 0.8rem;
-    padding-right: 20px;
-  }
-  
-  .kasir-menu-item .price {
-    font-size: 0.9rem;
-  }
-  
-  .order-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 12px;
-  }
-  
-  .order-item-controls {
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .quantity-controls {
-    order: 1;
-  }
-  
-  .order-item-price {
-    order: 2;
-    font-size: 1.1rem;
-  }
-}
-
-/* ===== SMALL MOBILE (< 480px) ===== */
-@media (max-width: 479px) {
-  .menu-category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
-    gap: 10px;
-    padding: 12px;
-  }
-  
-  .kasir-menu-item {
-    min-height: 90px;
-    max-height: 105px;
-    padding: 10px;
-  }
-  
-  .kasir-menu-item h5 {
-    font-size: 0.75rem;
-    max-height: 2em;
-    padding-right: 16px;
-  }
-  
-  .kasir-menu-item .price {
-    font-size: 0.85rem;
-  }
-  
-  .category-tab {
-    min-width: 75px;
-    padding: 6px 10px;
-    font-size: 0.7rem;
-  }
-  
-  .kasir-search-box input {
-    font-size: 0.8rem;
-    padding: 8px 10px 8px 30px;
-  }
-  
-  .btn-large {
-    padding: 12px 16px;
-    font-size: 0.9rem;
-  }
-  
-  .total-amount {
-    font-size: 1.6rem;
-  }
-}
-
-/* ===== ACCESSIBILITY & PERFORMANCE ===== */
-@media (prefers-reduced-motion: reduce) {
-  .kasir-menu-item,
-  .order-item,
-  .category-tab,
-  .quantity-btn,
-  .btn-large,
-  .order-panel {
-    transition: none !important;
-    animation: none !important;
-  }
 }
