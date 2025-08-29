@@ -570,6 +570,129 @@ class Kasir {
   static getTotalAmount() {
     return WarkopBabol.currentOrder.reduce((total, item) => total + item.subtotal, 0);
   }
+// ===== MOBILE RESPONSIVENESS IMPROVEMENTS =====
+
+static initMobileFeatures() {
+  // Cek jika dalam mode mobile
+  if (window.innerWidth <= 767) {
+    this.setupMobileOrderToggle();
+  }
+  
+  // Listen untuk resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 767) {
+      this.setupMobileOrderToggle();
+    } else {
+      this.removeMobileOrderToggle();
+    }
+  });
+}
+
+static setupMobileOrderToggle() {
+  const orderSection = document.querySelector('.kasir-order-section');
+  if (!orderSection) return;
+  
+  // Tambah tombol toggle jika belum ada
+  if (!orderSection.querySelector('.order-toggle')) {
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'order-toggle';
+    toggleBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Pesanan (${this.getTotalItems()})`;
+    
+    toggleBtn.addEventListener('click', () => {
+      orderSection.classList.toggle('expanded');
+      const isExpanded = orderSection.classList.contains('expanded');
+      toggleBtn.innerHTML = isExpanded 
+        ? `<i class="fas fa-times"></i> Tutup`
+        : `<i class="fas fa-shopping-cart"></i> Pesanan (${this.getTotalItems()})`;
+    });
+    
+    orderSection.appendChild(toggleBtn);
+  }
+  
+  // Update counter saat ada perubahan
+  this.updateMobileToggleCounter();
+}
+
+static removeMobileOrderToggle() {
+  const toggleBtn = document.querySelector('.order-toggle');
+  if (toggleBtn) {
+    toggleBtn.remove();
+  }
+  
+  const orderSection = document.querySelector('.kasir-order-section');
+  if (orderSection) {
+    orderSection.classList.remove('expanded');
+    orderSection.style.transform = '';
+    orderSection.style.position = '';
+  }
+}
+
+static updateMobileToggleCounter() {
+  const toggleBtn = document.querySelector('.order-toggle');
+  if (toggleBtn && !document.querySelector('.kasir-order-section').classList.contains('expanded')) {
+    const totalItems = this.getTotalItems();
+    toggleBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Pesanan (${totalItems})`;
+  }
+}
+
+// Update method yang ada
+static updateOrderDisplay() {
+  const container = document.getElementById('orderItemsContainer');
+  const processBtn = document.getElementById('processOrderBtn');
+  const totalAmount = document.getElementById('totalAmount');
+
+  if (!container || !totalAmount || !processBtn) return;
+
+  if (WarkopBabol.currentOrder.length === 0) {
+    container.innerHTML = `
+      <div class="empty-order">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Belum ada pesanan</p>
+        <small>Pilih menu dari panel sebelah kiri</small>
+      </div>
+    `;
+    totalAmount.textContent = 'Rp 0';
+    processBtn.disabled = true;
+    
+    // Update mobile toggle counter
+    this.updateMobileToggleCounter();
+    return;
+  }
+
+  let total = 0;
+  container.innerHTML = WarkopBabol.currentOrder.map((item, index) => {
+    total += item.subtotal;
+    return this.getOrderItemHTML(item, index);
+  }).join('');
+
+  totalAmount.textContent = Utils.formatRupiah(total);
+  processBtn.disabled = false;
+  
+  // Update mobile toggle counter
+  this.updateMobileToggleCounter();
+}
+
+// Update method load
+static async load() {
+  try {
+    await this.loadMenuData();
+
+    if (!this.eventListenersInitialized) {
+      this.initEventListeners();
+      this.initSearchBox();
+      this.initMobileFeatures(); // ✅ Tambah ini
+      this.eventListenersInitialized = true;
+    }
+
+    this.displayMenuByCategory();
+    this.updateOrderDisplay();
+    this.fixCardTextTruncation();
+
+  } catch (error) {
+    console.error('Error loading kasir:', error);
+    Utils.showNotification('Gagal memuat data kasir', 'error');
+  }
+}
 
   static reset() {
     this.eventListenersInitialized = false;
