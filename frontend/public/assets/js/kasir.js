@@ -66,31 +66,230 @@ class Kasir {
   }
 
   /* FITUR PENCARIAN: Inisialisasi search box */
-  static initSearchBox() {
-    const input = document.getElementById('menuSearchInput');
-    if (!input) return;
+/* FITUR PENCARIAN GLOBAL: Inisialisasi search box */
+static initSearchBox() {
+  const input = document.getElementById('menuSearchInput');
+  if (!input) return;
 
-    // Hindari double binding
-    if (input.dataset.initialized) return;
-    input.dataset.initialized = 'true';
+  // Hindari double binding
+  if (input.dataset.initialized) return;
+  input.dataset.initialized = 'true';
 
-    // Gunakan debounce agar ringan
-    input.addEventListener(
-      'input',
-      Utils.debounce((e) => {
-        this.searchTerm = e.target.value.trim().toLowerCase();
-        this.filterMenuCards();
-      }, 200)
-    );
+  // Gunakan debounce agar ringan
+  input.addEventListener(
+    'input',
+    Utils.debounce((e) => {
+      this.searchTerm = e.target.value.trim().toLowerCase();
+      this.globalMenuSearch(); // ✅ Ubah ke global search
+    }, 200)
+  );
 
-    // Clear search saat pindah kategori
-    input.addEventListener('focus', () => {
-      if (input.value.trim() === '') {
-        this.searchTerm = '';
-        this.filterMenuCards();
-      }
-    });
+  // Clear search saat focus dan kosong
+  input.addEventListener('focus', () => {
+    if (input.value.trim() === '') {
+      this.searchTerm = '';
+      this.resetToCurrentCategory(); // Reset ke tampilan kategori saat ini
+    }
+  });
+
+  // Clear search dengan ESC key
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.target.value = '';
+      this.searchTerm = '';
+      this.resetToCurrentCategory();
+    }
+  });
+}
+
+/* FITUR PENCARIAN GLOBAL: Cari di semua kategori */
+static globalMenuSearch() {
+  const search = this.searchTerm;
+  
+  // Jika search kosong, kembali ke tampilan normal kategori aktif
+  if (search.length === 0) {
+    this.resetToCurrentCategory();
+    return;
   }
+
+  // Jika search kurang dari 2 karakter, tampilkan semua di kategori aktif
+  if (search.length < 2) {
+    this.filterCurrentCategoryOnly();
+    return;
+  }
+
+  // Cari di semua kategori dan tampilkan hasil
+  this.searchAllCategories(search);
+}
+
+/* FITUR PENCARIAN: Cari di semua kategori dan tampilkan hasilnya */
+static searchAllCategories(searchTerm) {
+  const allResults = [];
+  const categories = ['main_menu', 'drinks', 'additional'];
+  
+  // Kumpulkan semua hasil pencarian
+  categories.forEach(category => {
+    const menus = WarkopBabol.menuData[category] || [];
+    const results = menus.filter(menu => 
+      menu.nama.toLowerCase().includes(searchTerm)
+    );
+    
+    results.forEach(menu => {
+      allResults.push({
+        ...menu,
+        category: category,
+        categoryName: this.getCategoryDisplayName(category)
+      });
+    });
+  });
+
+  console.log(`🔍 Global search "${searchTerm}" found ${allResults.length} results`);
+
+  // Tampilkan hasil pencarian di kategori yang sedang aktif
+  this.displaySearchResults(allResults, searchTerm);
+}
+
+/* Helper: Nama tampilan kategori */
+static getCategoryDisplayName(category) {
+  const names = {
+    main_menu: 'Main Menu',
+    drinks: 'Drinks', 
+    additional: 'Additional'
+  };
+  return names[category] || category;
+}
+
+/* Tampilkan hasil pencarian global */
+static displaySearchResults(results, searchTerm) {
+  const containerSelector = this.getActiveContainerSelector();
+  const container = document.querySelector(containerSelector);
+  
+  if (!container) return;
+
+  // Sembunyikan semua kategori grid dulu
+  document.querySelectorAll('.menu-category-grid').forEach(grid => {
+    grid.classList.remove('active');
+  });
+
+  // Aktifkan container yang sedang dipilih
+  container.classList.add('active');
+
+  // Hapus pesan search yang lama
+  const existingMessage = container.querySelector('.search-result-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+
+  if (results.length === 0) {
+    container.innerHTML = `
+      <div class="search-result-message">
+        <div class="no-search-result">
+          <i class="fas fa-search"></i>
+          <p>Tidak ada menu ditemukan</p>
+          <small>Tidak ada menu yang mengandung "${searchTerm}"</small>
+          <button class="btn btn-outline btn-sm" onclick="Kasir.clearSearch()">
+            <i class="fas fa-times"></i> Hapus Pencarian
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Tampilkan hasil dengan kategori badge
+  const resultsHTML = results.map(menu => {
+    return this.getKasirMenuItemHTMLWithCategory(menu);
+  }).join('');
+
+  container.innerHTML = `
+    <div class="search-results-header">
+      <div class="search-info">
+        <i class="fas fa-search"></i>
+        <span>Hasil pencarian untuk "<strong>${searchTerm}</strong>"</span>
+        <span class="results-count">${results.length} menu ditemukan</span>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="Kasir.clearSearch()">
+        <i class="fas fa-times"></i> Hapus Pencarian
+      </button>
+    </div>
+    <div class="search-results-grid">
+      ${resultsHTML}
+    </div>
+  `;
+}
+
+/* Template menu item dengan badge kategori */
+static getKasirMenuItemHTMLWithCategory(menu) {
+  const isOutOfStock = !menu.isInfinite && menu.stok <= 0;
+  const stockClass = isOutOfStock ? 'out-of-stock' : '';
+
+  let stockBadge;
+  if (menu.isInfinite) {
+    stockBadge = `<span class="stock-badge-kasir infinite">∞</span>`;
+  } else if (isOutOfStock) {
+    stockBadge = `<span class="stock-badge-kasir unavailable">Habis</span>`;
+  } else {
+    stockBadge = `<span class="stock-badge-kasir available">${menu.stok}</span>`;
+  }
+
+  const clickHandler = isOutOfStock
+    ? `onclick="Utils.showNotification('Stok menu ${menu.nama} sudah habis!', 'warning')"`
+    : `onclick="Kasir.addToOrder('${menu._id}', '${menu.nama.replace(/'/g, "\\'")}', ${menu.harga}, ${menu.stok}, ${menu.isInfinite})"`;
+
+  // Badge kategori
+  const categoryBadge = `<span class="category-badge-kasir">${menu.categoryName}</span>`;
+
+  return `
+    <div class="kasir-menu-item search-result-item ${stockClass}" 
+         data-name="${menu.nama.toLowerCase()}" 
+         data-category="${menu.category}"
+         ${clickHandler}>
+      ${stockBadge}
+      ${categoryBadge}
+      <h5>${menu.nama}</h5>
+      <p class="price">${Utils.formatRupiah(menu.harga)}</p>
+    </div>
+  `;
+}
+/* Reset ke tampilan kategori normal */
+static resetToCurrentCategory() {
+  // Sembunyikan semua kategori
+  document.querySelectorAll('.menu-category-grid').forEach(grid => {
+    grid.classList.remove('active');
+  });
+
+  // Tampilkan kategori yang sedang aktif
+  const containerSelector = this.getActiveContainerSelector();
+  const container = document.querySelector(containerSelector);
+  if (container) {
+    container.classList.add('active');
+  }
+
+  // Reload tampilan kategori biasa
+  this.displayMenuByCategory();
+}
+
+/* Filter hanya pada kategori aktif (untuk search < 2 karakter) */
+static filterCurrentCategoryOnly() {
+  const search = this.searchTerm;
+  const containerSelector = this.getActiveContainerSelector();
+
+  document.querySelectorAll(`${containerSelector} .kasir-menu-item`).forEach((card) => {
+    const name = card.dataset.name || '';
+    const match = search.length === 0 ? true : name.includes(search);
+    card.style.display = match ? 'block' : 'none';
+  });
+}
+
+/* Method untuk clear search dari button */
+static clearSearch() {
+  const searchInput = document.getElementById('menuSearchInput');
+  if (searchInput) {
+    searchInput.value = '';
+  }
+  this.searchTerm = '';
+  this.resetToCurrentCategory();
+}
 
   /* FITUR PENCARIAN: Sembunyikan/tampilkan kartu menu sesuai kata kunci */
   static filterMenuCards() {

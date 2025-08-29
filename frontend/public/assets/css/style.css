@@ -3597,7 +3597,107 @@ body {
     min-height: 400px;
     order: 1;
   }
+  /* ===== GLOBAL SEARCH RESULTS STYLING ===== */
+.search-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #fff5f8, #ffeef2);
+  border-radius: 12px;
+  border: 2px solid var(--light-pink);
+}
+
+.search-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.search-info i {
+  color: var(--primary-pink);
+  font-size: 1.1rem;
+}
+
+.results-count {
+  background: var(--primary-pink);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.search-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+  padding: 0 20px;
+}
+
+.search-result-item {
+  position: relative;
+}
+
+.category-badge-kasir {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #9C27B0, #BA68C8);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.no-search-result {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--dark-gray);
+}
+
+.no-search-result i {
+  font-size: 3rem;
+  color: var(--light-pink);
+  margin-bottom: 15px;
+}
+
+.no-search-result p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.no-search-result small {
+  display: block;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .search-results-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
   
+  .search-results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    padding: 0 15px;
+  }
+  
+  .category-badge-kasir {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+  }
+}
+
   .order-panel {
     /* Panel pesanan di bagian bawah */
     width: 100%;
