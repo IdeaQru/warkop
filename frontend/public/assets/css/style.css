@@ -1432,20 +1432,80 @@ body {
   }
 }
 /* ===== MOBILE RESPONSIVE (< 768px) ===== */
-/* ===== PERBAIKAN CATEGORY TABS MOBILE ===== */
 @media (max-width: 767px) {
+  .kasir-container {
+    display: block; /* Ubah dari grid ke block */
+    height: auto;
+    position: relative;
+    padding-bottom: 120px; /* Ruang untuk order panel */
+  }
+  
+  .menu-selection-panel {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .order-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 60vh;
+    border-radius: 20px 20px 0 0;
+    z-index: 1000;
+    transform: translateY(calc(100% - 80px)); /* Tampilkan hanya header */
+    transition: transform 0.3s ease;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+  }
+  
+  .order-panel.expanded {
+    transform: translateY(0);
+  }
+  
+  /* Toggle button untuk mobile */
+  .order-panel::before {
+    content: '🛒 Pesanan';
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-pink);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 15px 15px 0 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+    z-index: 1001;
+  }
+  
+  /* Menu grid untuk mobile */
+  .menu-category-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 15px;
+    padding-bottom: 30px;
+  }
+  
+  .kasir-menu-item {
+    min-height: 100px;
+    max-height: 120px;
+  }
+  
+  .kasir-menu-item h5 {
+    font-size: 0.8rem;
+    padding-right: 18px;
+  }
+  
+  /* Category tabs untuk mobile */
   .category-tabs {
-    display: flex;
-    background: var(--white);
-    padding: 12px 15px;
-    gap: 8px;
-    flex-shrink: 0;
+    flex-direction: row;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    /* PERBAIKAN: Jangan ubah ke flex-direction: column */
-    flex-direction: row; /* Tetap horizontal seperti PC */
-    justify-content: flex-start;
+    padding: 12px;
+    gap: 8px;
   }
   
   .category-tabs::-webkit-scrollbar {
@@ -1453,39 +1513,13 @@ body {
   }
   
   .category-tab {
-    /* PERBAIKAN: Konsisten dengan desktop */
-    flex: none; /* Jangan gunakan flex: 1 di mobile */
-    min-width: 85px;
-    flex-shrink: 0;
-    padding: 10px 16px;
-    background: var(--light-gray);
-    border: none;
-    border-radius: 10px;
+    min-width: 90px;
+    padding: 8px 12px;
     font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--dark-gray);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
     white-space: nowrap;
-    text-align: center;
-    box-sizing: border-box;
-  }
-  
-  .category-tab:hover {
-    background: var(--medium-gray);
-  }
-  
-  .category-tab.active {
-    background: linear-gradient(135deg, var(--primary-pink) 0%, var(--light-pink) 100%);
-    color: var(--white);
-    box-shadow: 0 3px 10px var(--shadow-light);
+    flex-shrink: 0;
   }
 }
-
 
 /* ===== SMALL MOBILE (< 480px) ===== */
 @media (max-width: 479px) {
